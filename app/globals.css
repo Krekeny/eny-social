@@ -31,12 +31,16 @@ body {
 
 /* Section intro label */
 .section-intro-label {
+  display: inline-block;
+  border-radius: 12px;
+  /* background: color-mix(in srgb, var(--apricot-dream) 8%, transparent); */
+  background: var(--apricot-dream);
+  padding: 0 14px;
   font-family: var(--font-instrument-serif);
   font-size: 28px;
   font-weight: 400;
   line-height: normal;
   color: var(--dusk-blue);
-  text-align: center;
 }
 
 /* Headline label — cards and hero sub-label */

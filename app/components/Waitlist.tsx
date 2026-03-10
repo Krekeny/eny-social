@@ -12,8 +12,14 @@ const avatars = [
 ];
 
 const colors = [
-  "bg-tangerine", "bg-monte-carlo", "bg-cotton-candy", "bg-pacific",
-  "bg-apricot", "bg-monte-carlo", "bg-cotton-candy", "bg-pacific",
+  "bg-tangerine",
+  "bg-monte-carlo",
+  "bg-cotton-candy",
+  "bg-pacific",
+  "bg-apricot",
+  "bg-monte-carlo",
+  "bg-cotton-candy",
+  "bg-pacific",
 ];
 
 export default function Waitlist() {
@@ -30,7 +36,9 @@ export default function Waitlist() {
             right: "right" in avatar ? avatar.right : undefined,
             width: avatar.size,
             height: avatar.size,
-            animation: `${i % 2 === 0 ? "float" : "float-slow"} ${6 + i}s ease-in-out infinite`,
+            animation: `${i % 2 === 0 ? "float" : "float-slow"} ${
+              6 + i
+            }s ease-in-out infinite`,
             animationDelay: `${avatar.delay}s`,
           }}
         >
@@ -68,21 +76,28 @@ export default function Waitlist() {
       </svg>
 
       {/* Small blob accents */}
-      <svg className="absolute left-1/4 top-1/4 h-24 w-24 opacity-10" viewBox="0 0 100 100" fill="none">
-        <path d="M70 50C70 70 60 85 50 90C40 95 20 80 15 60C10 40 25 15 45 10C65 5 70 25 70 50Z" fill="var(--pacific-blue)" />
+      <svg
+        className="absolute left-1/4 top-1/4 h-24 w-24 opacity-10"
+        viewBox="0 0 100 100"
+        fill="none"
+      >
+        <path
+          d="M70 50C70 70 60 85 50 90C40 95 20 80 15 60C10 40 25 15 45 10C65 5 70 25 70 50Z"
+          fill="var(--pacific-blue)"
+        />
       </svg>
 
       <div className="relative mx-auto max-w-2xl text-center">
         <span className="section-intro-label">Come on in</span>
 
         <h2 className="mt-6">
-          Join the first{" "}
-          <span className="italic text-tangerine">1,000</span>
+          Join the first <span className="italic text-tangerine">1,000</span>
         </h2>
 
         <p className="section-copy mx-auto mt-6 max-w-lg">
-          A social network that belongs to you — not shareholders, not algorithms. Built in Europe,
-          starting in Offenbach, for everyone.
+          The algorithms shaping your reality shouldn't be controlled by
+          shareholders in Silicon Valley. At eny.social, you own your feed, your
+          data, and your voice.
         </p>
 
         <a
@@ -97,7 +112,11 @@ export default function Waitlist() {
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
           </svg>
         </a>
       </div>

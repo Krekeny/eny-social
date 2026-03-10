@@ -16,8 +16,9 @@ export default function WeBelieve() {
             </h2>
 
             <p className="section-copy mt-8 max-w-lg">
-              The algorithms shaping your reality shouldn&apos;t be controlled by shareholders in
-              Silicon Valley. At eny.social, you own your feed, your data, and your voice.
+              The algorithms shaping your reality shouldn't be controlled by
+              shareholders in Silicon Valley. At eny.social, you own your feed,
+              your data, and your voice.
             </p>
           </div>
 
@@ -39,7 +40,11 @@ export default function WeBelieve() {
               {/* Circular photo */}
               <div className="h-48 w-48 overflow-hidden rounded-full bg-gradient-to-br from-monte-carlo to-pacific md:h-56 md:w-56">
                 <div className="flex h-full items-center justify-center text-white/40">
-                  <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-16 w-16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
                   </svg>
                 </div>
@@ -47,7 +52,11 @@ export default function WeBelieve() {
               {/* Rounded rectangle photo */}
               <div className="h-56 w-40 overflow-hidden rounded-3xl bg-gradient-to-br from-cotton-candy to-tangerine md:h-64 md:w-44">
                 <div className="flex h-full items-center justify-center text-white/40">
-                  <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-16 w-16"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
                   </svg>
                 </div>

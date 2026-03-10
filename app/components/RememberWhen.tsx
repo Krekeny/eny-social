@@ -24,16 +24,29 @@ export default function RememberWhen() {
         {/* Three circular photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
           {[
-            { bg: "from-monte-carlo to-pacific", size: "h-28 w-28 md:h-36 md:w-36" },
-            { bg: "from-apricot to-tangerine", size: "h-32 w-32 md:h-40 md:w-40" },
-            { bg: "from-cotton-candy to-tangerine", size: "h-28 w-28 md:h-36 md:w-36" },
+            {
+              bg: "from-monte-carlo to-pacific",
+              size: "h-28 w-28 md:h-36 md:w-36",
+            },
+            {
+              bg: "from-apricot to-tangerine",
+              size: "h-32 w-32 md:h-40 md:w-40",
+            },
+            {
+              bg: "from-cotton-candy to-tangerine",
+              size: "h-28 w-28 md:h-36 md:w-36",
+            },
           ].map((photo, i) => (
             <div
               key={i}
               className={`${photo.size} overflow-hidden rounded-full bg-gradient-to-br ${photo.bg}`}
             >
               <div className="flex h-full items-center justify-center text-white/40">
-                <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-12 w-12"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
                 </svg>
               </div>
@@ -42,8 +55,10 @@ export default function RememberWhen() {
         </div>
 
         <p className="section-copy mx-auto mt-12 max-w-2xl">
-          Finding new people. Discovering communities that get you. Tools that actually make your
-          life easier. That magic didn&apos;t disappear — it just needs a better home.
+          Finding new people. Discovering communities that get you. Tools that
+          actually help. Somewhere along the way, that got buried under ads,
+          algorithms, and engagement traps.{" "}
+          <strong>We're building it back.</strong>
         </p>
       </div>
 
