@@ -14,11 +14,9 @@ export default function RememberWhen() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <span className="inline-block rounded-full bg-tangerine/10 px-4 py-1.5 text-sm font-medium text-tangerine">
-          Remember when
-        </span>
+        <span className="stage-label">Remember when</span>
 
-        <h2 className="mt-6 font-serif text-4xl text-charcoal md:text-5xl lg:text-6xl">
+        <h2 className="mt-6">
           Social media used to be{" "}
           <span className="italic text-tangerine">fun?</span>
         </h2>
@@ -43,7 +41,7 @@ export default function RememberWhen() {
           ))}
         </div>
 
-        <p className="mx-auto mt-12 max-w-2xl text-lg leading-relaxed text-charcoal/80 md:text-xl">
+        <p className="section-intro mx-auto mt-12 max-w-2xl">
           Finding new people. Discovering communities that get you. Tools that actually make your
           life easier. That magic didn&apos;t disappear — it just needs a better home.
         </p>

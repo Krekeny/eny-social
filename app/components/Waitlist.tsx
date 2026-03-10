@@ -73,11 +73,9 @@ export default function Waitlist() {
       </svg>
 
       <div className="relative mx-auto max-w-2xl text-center">
-        <span className="inline-block rounded-full bg-pacific/10 px-4 py-1.5 text-sm font-medium text-pacific">
-          Come on in
-        </span>
+        <span className="stage-label">Come on in</span>
 
-        <h2 className="mt-6 font-serif text-5xl text-charcoal md:text-6xl lg:text-7xl">
+        <h2 className="mt-6">
           Join the first{" "}
           <span className="italic text-tangerine">1,000</span>
         </h2>

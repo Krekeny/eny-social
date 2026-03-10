@@ -5,11 +5,9 @@ export default function WeBelieve() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Text */}
           <div>
-            <span className="inline-block rounded-full bg-pacific/10 px-4 py-1.5 text-sm font-medium text-pacific">
-              We believe
-            </span>
+            <span className="stage-label">We believe</span>
 
-            <h2 className="mt-6 font-serif text-4xl leading-tight text-charcoal md:text-5xl lg:text-6xl">
+            <h2 className="mt-6">
               Your feed.
               <br />
               Your data.

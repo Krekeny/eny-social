@@ -45,18 +45,15 @@ export default function Hero() {
 
           {/* Main content */}
           <div className="lg:col-span-6">
-            <p className="mb-4 text-sm tracking-wide text-charcoal/50 uppercase">
-              a place where you can
-            </p>
-            <h1 className="font-serif text-6xl leading-[1.1] text-charcoal md:text-7xl lg:text-8xl">
-              Connect
-              <br />
-              with{" "}
-              <span className="relative inline-block">
+            <p className="stage-label mb-4">a place where you can</p>
+            <h1>
+              <span className="stage-heading-1 block text-left">Connect</span>
+              <span className="stage-heading-1 block text-right">with</span>
+              <span className="relative block text-right">
                 {words.map((word, index) => (
                   <span
                     key={word}
-                    className="absolute left-0 top-0 italic text-tangerine transition-all duration-500"
+                    className="stage-heading-2 absolute right-0 top-0 transition-all duration-500"
                     style={{
                       opacity: currentIndex === index ? 1 : 0,
                       transform:
@@ -71,18 +68,18 @@ export default function Hero() {
                   </span>
                 ))}
                 {/* Invisible placeholder for sizing */}
-                <span className="invisible italic">communities</span>
+                <span className="stage-heading-2 invisible">communities</span>
               </span>
             </h1>
 
             <div className="mt-12 max-w-md">
-              <p className="mb-3 font-serif text-2xl italic text-charcoal">
+              <h2 className="mb-3">
                 A social network that belongs to the people.
-              </p>
-              <p className="text-lg leading-relaxed text-charcoal/80">
-                <span className="font-semibold text-charcoal">No algorithms</span> shaping your
+              </h2>
+              <p className="stage-description text-right">
+                <strong>No algorithms</strong> shaping your
                 reality. Decentralized. Built and hosted in{" "}
-                <span className="font-semibold text-charcoal">Europe</span>.
+                <strong>Europe</strong>.
               </p>
             </div>
           </div>
