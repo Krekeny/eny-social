@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --tangerine-dream: #FC9558;
+  --cotton-candy: #F89F9F;
+  --apricot-dream: #FBD1A2;
+  --monte-carlo: #7DCFB6;
+  --pacific-blue: #00B2CA;
+  --dusk-blue: #1D4E89;
+  --linen: #FEF9F4;
+  --charcoal: #2F2926;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-tangerine: var(--tangerine-dream);
+  --color-cotton-candy: var(--cotton-candy);
+  --color-apricot: var(--apricot-dream);
+  --color-monte-carlo: var(--monte-carlo);
+  --color-pacific: var(--pacific-blue);
+  --color-dusk: var(--dusk-blue);
+  --color-linen: var(--linen);
+  --color-charcoal: var(--charcoal);
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-inter);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--linen);
+  color: var(--charcoal);
+}
+
+/* Text cycling animation */
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(0); }
+  40% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Floating avatar animation */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(5px, -10px); }
+  50% { transform: translate(-5px, -5px); }
+  75% { transform: translate(8px, 5px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-8px, -12px); }
+  66% { transform: translate(6px, 8px); }
+}
+
+/* Decorative line path animation */
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Horizontal scroll for value cards */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
