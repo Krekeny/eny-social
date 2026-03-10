@@ -31,12 +31,12 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-12">
           {/* Left sidebar links */}
-          <div className="hidden lg:col-span-2 lg:flex lg:flex-col lg:gap-4 lg:pt-16">
+          <div className="hidden lg:col-span-2 lg:flex lg:flex-col lg:items-end lg:justify-end">
             {["What", "How does it work", "offenbach.social", "Blog", "Contact"].map((link) => (
               <a
                 key={link}
                 href="#"
-                className="text-sm text-charcoal/50 transition-colors hover:text-tangerine"
+                className="nav-link transition-colors hover:text-tangerine"
               >
                 {link}
               </a>

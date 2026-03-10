@@ -3,14 +3,14 @@ export default function Footer() {
     <footer className="border-t border-charcoal/10 px-6 py-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
         {/* Links */}
-        <div className="flex gap-6 text-sm text-charcoal/50">
-          <a href="#" className="transition-colors hover:text-charcoal">
+        <div className="flex flex-col items-end gap-0">
+          <a href="#" className="nav-link transition-colors hover:text-tangerine">
             imprint
           </a>
-          <a href="#" className="transition-colors hover:text-charcoal">
+          <a href="#" className="nav-link transition-colors hover:text-tangerine">
             support
           </a>
-          <a href="#" className="transition-colors hover:text-charcoal">
+          <a href="#" className="nav-link transition-colors hover:text-tangerine">
             privacy
           </a>
         </div>

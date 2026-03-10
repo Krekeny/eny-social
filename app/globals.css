@@ -183,6 +183,23 @@ h2 {
   }
 }
 
+/* Navigation Link */
+.nav-link {
+  font-family: var(--font-instrument-sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 200%;
+  letter-spacing: -1px;
+  text-align: right;
+  color: var(--charcoal);
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+}
+
 /* Quote */
 .quote {
   font-family: var(--font-instrument-serif);
