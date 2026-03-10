@@ -14,14 +14,14 @@ export default function StartingInOffenbach() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <span className="stage-label">Starting in Offenbach</span>
+        <span className="section-intro-label">Starting in Offenbach</span>
 
         <h2 className="mt-6">
           Your city. Your community.{" "}
           <span className="italic text-tangerine">One app.</span>
         </h2>
 
-        <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-charcoal/80 md:text-xl">
+        <p className="section-copy mx-auto mt-8 max-w-2xl">
           Find your neighbors, discover local events, navigate city services — from finding an
           apartment to figuring out trash collection day. Everything Offenbach, in one place.
         </p>

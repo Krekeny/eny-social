@@ -32,7 +32,7 @@ export default function ValueCards() {
                 key={i}
                 className="flex min-w-[280px] max-w-[320px] shrink-0 flex-col justify-between rounded-3xl bg-linen p-8 shadow-sm"
               >
-                <span className="mb-6 inline-block self-start rounded-full bg-tangerine/10 px-4 py-1.5 text-sm font-medium text-tangerine">
+                <span className="headline-label mb-6 self-start">
                   {card.label}
                 </span>
                 <p className="font-serif text-2xl leading-snug text-charcoal">

@@ -29,8 +29,18 @@ body {
   color: var(--charcoal);
 }
 
-/* Stage headline label */
-.stage-label {
+/* Section intro label */
+.section-intro-label {
+  font-family: var(--font-instrument-serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--dusk-blue);
+  text-align: center;
+}
+
+/* Headline label — cards and hero sub-label */
+.headline-label {
   font-family: var(--font-instrument-sans);
   font-size: 20px;
   font-weight: 600;
@@ -39,8 +49,8 @@ body {
   color: var(--charcoal);
 }
 
-/* Stage description */
-.stage-description {
+/* Section copy */
+.section-copy {
   font-family: var(--font-instrument-sans);
   font-size: 20px;
   font-weight: 400;
@@ -49,7 +59,7 @@ body {
   color: var(--charcoal);
 }
 
-.stage-description strong {
+.section-copy strong {
   font-weight: 600;
 }
 

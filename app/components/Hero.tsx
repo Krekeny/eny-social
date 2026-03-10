@@ -45,7 +45,7 @@ export default function Hero() {
 
           {/* Main content */}
           <div className="lg:col-span-6">
-            <p className="stage-label mb-4">a place where you can</p>
+            <p className="headline-label mb-4">a place where you can</p>
             <h1>
               <span className="stage-heading-1 block text-left">Connect</span>
               <span className="stage-heading-1 block text-right">with</span>
@@ -76,7 +76,7 @@ export default function Hero() {
               <h2 className="mb-3">
                 A social network that belongs to the people.
               </h2>
-              <p className="stage-description text-right">
+              <p className="section-copy text-right">
                 <strong>No algorithms</strong> shaping your
                 reality. Decentralized. Built and hosted in{" "}
                 <strong>Europe</strong>.

@@ -14,7 +14,7 @@ export default function RememberWhen() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <span className="stage-label">Remember when</span>
+        <span className="section-intro-label">Remember when</span>
 
         <h2 className="mt-6">
           Social media used to be{" "}
@@ -41,7 +41,7 @@ export default function RememberWhen() {
           ))}
         </div>
 
-        <p className="section-intro mx-auto mt-12 max-w-2xl">
+        <p className="section-copy mx-auto mt-12 max-w-2xl">
           Finding new people. Discovering communities that get you. Tools that actually make your
           life easier. That magic didn&apos;t disappear — it just needs a better home.
         </p>

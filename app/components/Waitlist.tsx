@@ -73,14 +73,14 @@ export default function Waitlist() {
       </svg>
 
       <div className="relative mx-auto max-w-2xl text-center">
-        <span className="stage-label">Come on in</span>
+        <span className="section-intro-label">Come on in</span>
 
         <h2 className="mt-6">
           Join the first{" "}
           <span className="italic text-tangerine">1,000</span>
         </h2>
 
-        <p className="mx-auto mt-6 max-w-lg text-lg leading-relaxed text-charcoal/80">
+        <p className="section-copy mx-auto mt-6 max-w-lg">
           A social network that belongs to you — not shareholders, not algorithms. Built in Europe,
           starting in Offenbach, for everyone.
         </p>

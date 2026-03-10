@@ -5,7 +5,7 @@ export default function WeBelieve() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Text */}
           <div>
-            <span className="stage-label">We believe</span>
+            <span className="section-intro-label">We believe</span>
 
             <h2 className="mt-6">
               Your feed.
@@ -15,7 +15,7 @@ export default function WeBelieve() {
               <span className="italic text-pacific">Your voice.</span>
             </h2>
 
-            <p className="mt-8 max-w-lg text-lg leading-relaxed text-charcoal/80">
+            <p className="section-copy mt-8 max-w-lg">
               The algorithms shaping your reality shouldn&apos;t be controlled by shareholders in
               Silicon Valley. At eny.social, you own your feed, your data, and your voice.
             </p>
