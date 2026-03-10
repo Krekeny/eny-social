@@ -183,6 +183,16 @@ h2 {
   }
 }
 
+/* Quote */
+.quote {
+  font-family: var(--font-instrument-serif);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  color: var(--dusk-blue);
+}
+
 /* Horizontal scroll for value cards */
 .hide-scrollbar {
   -ms-overflow-style: none;
