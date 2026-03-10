@@ -67,6 +67,15 @@ body {
   font-weight: 600;
 }
 
+/* Card headline */
+.card-headline {
+  font-family: var(--font-instrument-serif);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--charcoal);
+}
+
 /* Stage Heading 1 — Sans, bold */
 .stage-heading-1 {
   font-family: var(--font-instrument-sans);

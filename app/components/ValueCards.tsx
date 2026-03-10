@@ -4,25 +4,45 @@ export default function ValueCards() {
       type: "text" as const,
       label: "Everything in one place",
       body: "People, media, and services. One home.",
+      bg: "var(--cotton-candy)",
     },
     { type: "image" as const, gradient: "from-monte-carlo to-pacific" },
     {
       type: "text" as const,
       label: "Secure by design",
       body: "We don't sell your data. Period.",
+      bg: "var(--apricot-dream)",
     },
     { type: "image" as const, gradient: "from-cotton-candy to-tangerine" },
     {
       type: "text" as const,
       label: "Made in Europe",
       body: "Built, hosted, and governed in Europe.",
+      bg: "var(--monte-carlo)",
     },
   ];
 
   return (
     <section className="relative py-24">
-      {/* Tangerine background band */}
-      <div className="absolute inset-0 bg-tangerine/8" />
+      {/* Grain filter definition */}
+      <svg className="absolute h-0 w-0" aria-hidden="true">
+        <defs>
+          <filter id="grain" x="0" y="0" width="100%" height="100%" filterUnits="objectBoundingBox" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch" seed="1581" result="noise" />
+            <feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+            <feComponentTransfer in="alphaNoise" result="coloredNoise">
+              <feFuncA type="discrete" tableValues="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+            </feComponentTransfer>
+            <feComposite operator="in" in2="SourceGraphic" in="coloredNoise" result="noiseClipped" />
+            <feFlood floodColor="rgba(0, 0, 0, 0.05)" result="colorFlood" />
+            <feComposite operator="in" in2="noiseClipped" in="colorFlood" result="colorNoise" />
+            <feMerge>
+              <feMergeNode in="SourceGraphic" />
+              <feMergeNode in="colorNoise" />
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
 
       <div className="relative">
         <div className="hide-scrollbar flex gap-6 overflow-x-auto px-6 pb-4 md:px-12">
@@ -30,14 +50,24 @@ export default function ValueCards() {
             card.type === "text" ? (
               <div
                 key={i}
-                className="flex min-w-[280px] max-w-[320px] shrink-0 flex-col justify-between rounded-3xl bg-linen p-8 shadow-sm"
+                className="relative min-w-[280px] max-w-[320px] shrink-0 overflow-hidden rounded-3xl p-8"
+                style={{ backgroundColor: card.bg }}
               >
-                <span className="headline-label mb-6 self-start">
-                  {card.label}
-                </span>
-                <p className="font-serif text-2xl leading-snug text-charcoal">
-                  {card.body}
-                </p>
+                {/* Grain overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{ filter: "url(#grain)" }}
+                >
+                  <div className="h-full w-full" style={{ backgroundColor: card.bg }} />
+                </div>
+                <div className="relative flex h-full flex-col justify-between">
+                  <span className="headline-label mb-6 self-start">
+                    {card.label}
+                  </span>
+                  <p className="card-headline">
+                    {card.body}
+                  </p>
+                </div>
               </div>
             ) : (
               <div
