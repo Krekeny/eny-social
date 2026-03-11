@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowCircleRightIcon } from "@phosphor-icons/react";
+import ButtonCta from "./ui/ButtonCta";
 
 const avatars = [
   { top: "8%", left: "10%", size: 48, delay: 0 },
@@ -102,13 +102,7 @@ export default function Waitlist() {
           data, and your voice.
         </p>
 
-        <a
-          href="#"
-          className="group mt-10 inline-flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[20px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-colors hover:bg-tangerine"
-        >
-          join the waitlist
-          <ArrowCircleRightIcon className="h-8 w-8 transition-transform group-hover:translate-x-1" weight="regular" />
-        </a>
+        <ButtonCta href="#" className="mt-10">join the waitlist</ButtonCta>
       </div>
     </section>
   );
