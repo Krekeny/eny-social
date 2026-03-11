@@ -16,7 +16,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen overflow-hidden px-6 pt-28 pb-20">
+    <section className="relative min-h-screen overflow-x-clip px-6 pt-28 pb-20">
       {/* Tangerine blob */}
       <svg
         className="absolute -right-20 top-20 h-[500px] w-[500px] opacity-30"
@@ -86,13 +86,13 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Image (6 cols) — fluid blob mask */}
-          <div className="relative lg:col-span-6">
+          {/* Image (6 cols) — bleeds top + right, blob visible on left + bottom */}
+          <div className="relative lg:col-span-6 lg:-mr-6 lg:-mt-28 lg:overflow-visible">
             {/* Blob clip path definition */}
             <svg className="absolute h-0 w-0" aria-hidden="true">
               <defs>
                 <clipPath id="hero-blob" clipPathUnits="objectBoundingBox">
-                  <path d="M0.82,0.14 C0.96,0.26,1.02,0.52,0.98,0.72 C0.94,0.92,0.78,1.02,0.58,0.98 C0.38,0.94,0.18,0.96,0.08,0.82 C-0.02,0.68,-0.02,0.42,0.06,0.26 C0.14,0.1,0.32,0.0,0.5,0.02 C0.68,0.04,0.68,0.02,0.82,0.14" />
+                  <path d="M0.35,-0.05 C0.55,-0.08,0.78,-0.05,1.0,-0.05 L1.05,-0.05 L1.05,0.85 C1.05,0.88,1.02,0.92,0.95,0.95 C0.82,1.02,0.62,0.98,0.45,0.95 C0.28,0.92,0.15,0.98,0.08,0.88 C0.0,0.78,-0.02,0.62,0.02,0.45 C0.06,0.28,0.04,0.15,0.08,0.06 C0.12,-0.02,0.2,-0.03,0.35,-0.05" />
                 </clipPath>
               </defs>
             </svg>
@@ -109,7 +109,7 @@ export default function Hero() {
             </svg>
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-full aspect-square"
+              className="relative w-[120%] aspect-[3/4] -mr-[20%]"
               style={{ clipPath: "url(#hero-blob)" }}
             >
               <img
