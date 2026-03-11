@@ -94,12 +94,12 @@ export default function Hero() {
           </div>
 
           {/* Image (6 cols) — bleeds top + right, blob visible on left + bottom */}
-          <div className="relative lg:col-span-6 lg:-mr-6 lg:-mt-28 lg:overflow-visible">
+          <div className="relative lg:col-span-6 lg:overflow-visible">
             {/* Blob clip path definition */}
             <svg className="absolute h-0 w-0" aria-hidden="true">
               <defs>
                 <clipPath id="hero-blob" clipPathUnits="objectBoundingBox">
-                  <path d="M0.25,-0.1 C0.45,-0.12,0.7,-0.1,1.1,-0.1 L1.1,0.75 C1.1,0.82,1.05,0.88,0.92,0.92 C0.75,0.98,0.55,1.05,0.38,0.98 C0.22,0.92,0.1,0.85,0.05,0.72 C-0.02,0.55,-0.04,0.38,0.02,0.22 C0.08,0.08,0.12,-0.04,0.25,-0.1" />
+                  <path d="M0.18,0 L1,0 L1,0.92 C0.92,0.96,0.8,0.92,0.7,0.96 C0.6,1.0,0.48,0.95,0.38,0.9 C0.28,0.85,0.18,0.78,0.12,0.68 C0.06,0.58,0.0,0.5,0.02,0.42 C0.04,0.34,0.12,0.3,0.1,0.22 C0.08,0.14,0.02,0.1,0.06,0.05 C0.1,0.01,0.14,0,0.18,0" />
                 </clipPath>
               </defs>
             </svg>
@@ -116,7 +116,7 @@ export default function Hero() {
             </svg>
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-[120%] aspect-[3/4] -mr-[20%]"
+              className="relative w-[130%] aspect-[3/4] -mt-28 -mr-[30%]"
               style={{ clipPath: "url(#hero-blob)" }}
             >
               <img
