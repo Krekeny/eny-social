@@ -210,6 +210,38 @@ h2 {
   color: var(--dusk-blue);
 }
 
+/* Masked image container */
+.clip-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.masked-container {
+  clip-path: url(#custom-mask);
+  position: relative;
+  overflow: hidden;
+}
+
+.masked-container img {
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  animation: drift 4s ease-in-out forwards;
+}
+
+@keyframes drift {
+  0% {
+    transform: scale(1.15) translate(0, 0);
+  }
+  100% {
+    transform: scale(1) translate(4%, 3%);
+  }
+}
+
 /* Horizontal scroll for value cards */
 .hide-scrollbar {
   -ms-overflow-style: none;
