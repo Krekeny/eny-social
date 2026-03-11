@@ -1,3 +1,5 @@
+import SectionIntroLabel from "./ui/SectionIntroLabel";
+
 export default function WeBelieve() {
   return (
     <section className="relative px-6 py-24">
@@ -5,7 +7,7 @@ export default function WeBelieve() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Text */}
           <div>
-            <span className="section-intro-label">We believe</span>
+            <SectionIntroLabel>We believe</SectionIntroLabel>
 
             <h2 className="mt-6">
               Your feed.

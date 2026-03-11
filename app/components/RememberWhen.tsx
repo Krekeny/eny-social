@@ -1,3 +1,5 @@
+import SectionIntroLabel from "./ui/SectionIntroLabel";
+
 export default function RememberWhen() {
   return (
     <section className="relative px-6 py-24">
@@ -26,7 +28,7 @@ export default function RememberWhen() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <span className="section-intro-label">Remember when</span>
+        <SectionIntroLabel>Remember when</SectionIntroLabel>
 
         <h2 className="mt-6">
           Social media used to be{" "}

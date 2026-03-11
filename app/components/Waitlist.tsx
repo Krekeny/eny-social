@@ -1,6 +1,7 @@
 "use client";
 
 import ButtonCta from "./ui/ButtonCta";
+import SectionIntroLabel from "./ui/SectionIntroLabel";
 
 const avatars = [
   { top: "8%", left: "10%", size: 48, delay: 0 },
@@ -90,7 +91,7 @@ export default function Waitlist() {
       </svg>
 
       <div className="relative mx-auto max-w-2xl text-center">
-        <span className="section-intro-label">Come on in</span>
+        <SectionIntroLabel>Come on in</SectionIntroLabel>
 
         <h2 className="mt-6">
           Join the first <span className="italic text-tangerine">1,000</span>

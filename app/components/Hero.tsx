@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import NavLink from "./ui/NavLink";
 
 const words = ["people", "media", "communities"];
 
@@ -33,13 +34,7 @@ export default function Hero() {
           {/* Left sidebar links */}
           <div className="hidden lg:col-span-2 lg:flex lg:flex-col lg:items-end lg:justify-end">
             {["What", "How does it work", "offenbach.social", "Blog", "Contact"].map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="nav-link transition-colors hover:text-tangerine"
-              >
-                {link}
-              </a>
+              <NavLink key={link} href="#">{link}</NavLink>
             ))}
           </div>
 

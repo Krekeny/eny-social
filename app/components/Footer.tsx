@@ -1,18 +1,14 @@
+import NavLink from "./ui/NavLink";
+
 export default function Footer() {
   return (
     <footer className="border-t border-charcoal/10 px-6 py-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
         {/* Links */}
         <div className="flex flex-col items-end gap-0">
-          <a href="#" className="nav-link transition-colors hover:text-tangerine">
-            imprint
-          </a>
-          <a href="#" className="nav-link transition-colors hover:text-tangerine">
-            support
-          </a>
-          <a href="#" className="nav-link transition-colors hover:text-tangerine">
-            privacy
-          </a>
+          <NavLink href="#">imprint</NavLink>
+          <NavLink href="#">support</NavLink>
+          <NavLink href="#">privacy</NavLink>
         </div>
 
         {/* Social icons */}
