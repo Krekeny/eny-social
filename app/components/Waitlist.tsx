@@ -102,7 +102,7 @@ export default function Waitlist() {
 
         <a
           href="#"
-          className="group mt-10 inline-flex items-center gap-2 rounded-full bg-charcoal px-8 py-4 text-lg font-medium text-linen transition-colors hover:bg-tangerine"
+          className="group mt-10 inline-flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[20px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-colors hover:bg-tangerine"
         >
           join the waitlist
           <svg

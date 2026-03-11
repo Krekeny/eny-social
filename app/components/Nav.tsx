@@ -24,7 +24,7 @@ export default function Nav() {
         </div>
         <a
           href="#waitlist"
-          className="group flex items-center gap-2 rounded-full bg-charcoal px-5 py-2.5 text-sm font-medium text-linen transition-colors hover:bg-tangerine"
+          className="group flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[20px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-colors hover:bg-tangerine"
         >
           join the waitlist
           <svg
