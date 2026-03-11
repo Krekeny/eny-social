@@ -93,13 +93,13 @@ export default function Hero() {
                   fill="var(--monte-carlo)"
                 />
               </svg>
-              {/* Circular photo placeholder */}
-              <div className="relative h-72 w-72 overflow-hidden rounded-full bg-gradient-to-br from-apricot to-tangerine lg:h-96 lg:w-96">
-                <div className="flex h-full items-center justify-center text-linen/60">
-                  <svg className="h-24 w-24" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
-                  </svg>
-                </div>
+              {/* Circular photo */}
+              <div className="relative h-72 w-72 overflow-hidden rounded-full lg:h-96 lg:w-96">
+                <img
+                  src="/images/pexels-kindelmedia-7148409 1.png"
+                  alt="People connecting"
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
           </div>

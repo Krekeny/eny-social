@@ -38,17 +38,18 @@ export default function RememberWhen() {
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
           {[
-            "from-monte-carlo to-pacific",
-            "from-apricot to-tangerine",
-            "from-cotton-candy to-tangerine",
-          ].map((bg, i) => (
+            "/images/pexels-kindelmedia-7148409 1.png",
+            "/images/pexels-shvets-production-7533377 1.png",
+            "/images/pexels-guilhermealmeida-1858175.png",
+          ].map((src, i) => (
             <div
               key={i}
               className="masked-container w-[197px] h-[225px] md:w-[263px] md:h-[300px]"
             >
-              {/* Gradient placeholder until real images are added */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${bg}`}
+              <img
+                src={src}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
                 style={{ width: "140%", height: "140%", top: "-20%", left: "-20%" }}
               />
             </div>
