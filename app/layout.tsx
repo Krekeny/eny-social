@@ -30,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${instrumentSerif.variable} ${instrumentSans.variable} font-sans antialiased`}
+        style={{ overflowX: "clip" }}
       >
         {children}
       </body>

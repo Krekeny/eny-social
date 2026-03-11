@@ -16,7 +16,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen overflow-x-clip px-6 pt-28 pb-20">
+    <section className="relative min-h-screen px-6 pt-28 pb-20">
       {/* Tangerine blob */}
       <svg
         className="absolute -right-20 top-20 h-[500px] w-[500px] opacity-30"
@@ -50,8 +50,8 @@ export default function Hero() {
                           currentIndex === index
                             ? "translateY(0)"
                             : currentIndex > index
-                              ? "translateY(-20px)"
-                              : "translateY(20px)",
+                            ? "translateY(-20px)"
+                            : "translateY(20px)",
                       }}
                     >
                       {word}
@@ -67,8 +67,16 @@ export default function Hero() {
             <div className="mt-12 grid lg:grid-cols-6 gap-4">
               {/* Menu links */}
               <div className="hidden lg:col-span-2 lg:flex lg:flex-col lg:items-end">
-                {["What", "How does it work", "offenbach.social", "Blog", "Contact"].map((link) => (
-                  <NavLink key={link} href="#">{link}</NavLink>
+                {[
+                  "What",
+                  "How does it work",
+                  "offenbach.social",
+                  "Blog",
+                  "Contact",
+                ].map((link) => (
+                  <NavLink key={link} href="#">
+                    {link}
+                  </NavLink>
                 ))}
               </div>
 
@@ -78,9 +86,8 @@ export default function Hero() {
                   A social network that belongs to the people.
                 </h2>
                 <p className="section-copy lg:pl-[calc(100%/4)] text-right">
-                  <strong>No algorithms</strong> shaping your
-                  reality. Decentralized. Built and hosted in{" "}
-                  <strong>Europe</strong>.
+                  <strong>No algorithms</strong> shaping your reality.
+                  Decentralized. Built and hosted in <strong>Europe</strong>.
                 </p>
               </div>
             </div>
@@ -92,7 +99,7 @@ export default function Hero() {
             <svg className="absolute h-0 w-0" aria-hidden="true">
               <defs>
                 <clipPath id="hero-blob" clipPathUnits="objectBoundingBox">
-                  <path d="M0.35,-0.05 C0.55,-0.08,0.78,-0.05,1.0,-0.05 L1.05,-0.05 L1.05,0.85 C1.05,0.88,1.02,0.92,0.95,0.95 C0.82,1.02,0.62,0.98,0.45,0.95 C0.28,0.92,0.15,0.98,0.08,0.88 C0.0,0.78,-0.02,0.62,0.02,0.45 C0.06,0.28,0.04,0.15,0.08,0.06 C0.12,-0.02,0.2,-0.03,0.35,-0.05" />
+                  <path d="M0.25,-0.1 C0.45,-0.12,0.7,-0.1,1.1,-0.1 L1.1,0.75 C1.1,0.82,1.05,0.88,0.92,0.92 C0.75,0.98,0.55,1.05,0.38,0.98 C0.22,0.92,0.1,0.85,0.05,0.72 C-0.02,0.55,-0.04,0.38,0.02,0.22 C0.08,0.08,0.12,-0.04,0.25,-0.1" />
                 </clipPath>
               </defs>
             </svg>
