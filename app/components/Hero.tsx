@@ -86,28 +86,37 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Image (6 cols) */}
+          {/* Image (6 cols) — fluid blob mask */}
           <div className="relative lg:col-span-6">
-            <div className="relative mx-auto h-72 w-72 lg:h-96 lg:w-96">
-              {/* Monte Carlo accent blob behind photo */}
-              <svg
-                className="absolute -bottom-8 -left-8 h-48 w-48 opacity-40"
-                viewBox="0 0 200 200"
-                fill="none"
-              >
-                <path
-                  d="M150 100C150 140 130 170 100 180C70 190 30 160 20 120C10 80 40 30 80 20C120 10 150 50 150 100Z"
-                  fill="var(--monte-carlo)"
-                />
-              </svg>
-              {/* Circular photo */}
-              <div className="relative h-72 w-72 overflow-hidden rounded-full lg:h-96 lg:w-96">
-                <img
-                  src="/images/pexels-kindelmedia-7148409 1.png"
-                  alt="People connecting"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+            {/* Blob clip path definition */}
+            <svg className="absolute h-0 w-0" aria-hidden="true">
+              <defs>
+                <clipPath id="hero-blob" clipPathUnits="objectBoundingBox">
+                  <path d="M0.82,0.14 C0.96,0.26,1.02,0.52,0.98,0.72 C0.94,0.92,0.78,1.02,0.58,0.98 C0.38,0.94,0.18,0.96,0.08,0.82 C-0.02,0.68,-0.02,0.42,0.06,0.26 C0.14,0.1,0.32,0.0,0.5,0.02 C0.68,0.04,0.68,0.02,0.82,0.14" />
+                </clipPath>
+              </defs>
+            </svg>
+            {/* Monte Carlo accent blob behind photo */}
+            <svg
+              className="absolute -bottom-8 -left-8 h-48 w-48 opacity-40"
+              viewBox="0 0 200 200"
+              fill="none"
+            >
+              <path
+                d="M150 100C150 140 130 170 100 180C70 190 30 160 20 120C10 80 40 30 80 20C120 10 150 50 150 100Z"
+                fill="var(--monte-carlo)"
+              />
+            </svg>
+            {/* Full-size blob-masked photo */}
+            <div
+              className="relative w-full aspect-square"
+              style={{ clipPath: "url(#hero-blob)" }}
+            >
+              <img
+                src="/images/pexels-kindelmedia-7148409 1.png"
+                alt="People connecting"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
