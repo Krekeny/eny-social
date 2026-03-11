@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ArrowCircleRightIcon } from "@phosphor-icons/react";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,15 +28,7 @@ export default function Nav() {
           className="group flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[20px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-colors hover:bg-tangerine"
         >
           join the waitlist
-          <svg
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
+          <ArrowCircleRightIcon className="h-8 w-8 transition-transform group-hover:translate-x-0.5" weight="regular" />
         </a>
       </div>
     </nav>

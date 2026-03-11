@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowCircleRightIcon } from "@phosphor-icons/react";
+
 const avatars = [
   { top: "8%", left: "10%", size: 48, delay: 0 },
   { top: "15%", right: "12%", size: 40, delay: 1.2 },
@@ -105,19 +107,7 @@ export default function Waitlist() {
           className="group mt-10 inline-flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[20px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-colors hover:bg-tangerine"
         >
           join the waitlist
-          <svg
-            className="h-5 w-5 transition-transform group-hover:translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 8l4 4m0 0l-4 4m4-4H3"
-            />
-          </svg>
+          <ArrowCircleRightIcon className="h-8 w-8 transition-transform group-hover:translate-x-1" weight="regular" />
         </a>
       </div>
     </section>
