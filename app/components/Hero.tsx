@@ -23,7 +23,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen px-6 pt-28 pb-20">
       {/* Grained star blob — decorative, bleeds left edge, behind text */}
-      <GrainedBlob className="pointer-events-none absolute -left-[30%] -top-[10%] h-[120vh] w-[120vh]" />
+      <GrainedBlob className="pointer-events-none absolute -left-[40%] -top-[10%] h-[120vh] w-[120vh]" />
 
       <div className="relative mx-auto max-w-[1536px]">
         <div className="grid gap-12 lg:grid-cols-12">
@@ -112,10 +112,10 @@ export default function Hero() {
             </svg>
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-[180%] aspect-square -mr-[80%]"
+              className="relative w-[170%] aspect-square -mr-[70%]"
               style={{
                 clipPath: "url(#hero-blob)",
-                transform: "translate(10%, -14%)",
+                transform: "translate(2%, -20%)",
               }}
             >
               {slides.map((slide, index) => (
