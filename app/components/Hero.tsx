@@ -99,18 +99,7 @@ export default function Hero() {
                 </clipPath>
               </defs>
             </svg>
-            {/* Monte Carlo accent blob behind photo */}
-            <svg
-              className="absolute -bottom-8 -left-8 h-48 w-48 opacity-40"
-              viewBox="0 0 200 200"
-              fill="none"
-            >
-              <path
-                d="M150 100C150 140 130 170 100 180C70 190 30 160 20 120C10 80 40 30 80 20C120 10 150 50 150 100Z"
-                fill="var(--monte-carlo)"
-              />
-            </svg>
-            {/* Full-size blob-masked photo */}
+{/* Full-size blob-masked photo */}
             <div
               // className="relative w-[130%] -mr-[30%] lg:w-[170%] lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
               className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"

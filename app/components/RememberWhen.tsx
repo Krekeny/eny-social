@@ -3,29 +3,33 @@ import SectionIntroLabel from "./ui/SectionIntroLabel";
 export default function RememberWhen() {
   return (
     <section className="relative px-6 py-24">
-      {/* SVG clip path definition */}
+      {/* SVG clip path definitions — all shapes are 350x400 */}
       <svg className="clip-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="custom-mask" clipPathUnits="objectBoundingBox">
+          {/* Original shape (image 1) */}
+          <clipPath id="mask-1" clipPathUnits="objectBoundingBox">
             <path
               transform="scale(0.002857, 0.0025)"
               d="M1.20005e-05 150L9.81496e-06 200L0 250C-3.62117e-06 332.843 67.1573 400 150 400H250C305.228 400 350 355.228 350 300C350 244.772 305.228 200 250 200C305.228 200 350 155.228 350 100C350 44.7715 305.229 6.78525e-06 250 4.37114e-06L150 0C67.1573 -3.62117e-06 1.56217e-05 67.1573 1.20005e-05 150Z"
             />
           </clipPath>
+          {/* A-shape (image 2) */}
+          <clipPath id="mask-2" clipPathUnits="objectBoundingBox">
+            <path
+              transform="scale(0.002857, 0.0025)"
+              d="M200 2.18557e-06L175 0L150 1.30732e-05C67.1573 5.83088e-06 2.14485e-05 67.1573 1.42062e-05 150L0 312.5C-4.2247e-06 360.825 39.1751 400 87.5 400C135.825 400 175 360.825 175 312.5C175 360.825 214.175 400 262.5 400C310.825 400 350 360.825 350 312.5V150C350 67.1573 282.843 9.42791e-06 200 2.18557e-06Z"
+            />
+          </clipPath>
+          {/* U-shape (image 3) */}
+          <clipPath id="mask-3" clipPathUnits="objectBoundingBox">
+            <path
+              transform="scale(0.002857, 0.0025)"
+              d="M150 400H175H200C282.843 400 350 332.843 350 250V87.5C350 39.1751 310.825 0 262.5 0C214.175 0 175 39.1751 175 87.5C175 39.1751 135.825 0 87.5 0C39.1751 0 0 39.1751 0 87.5V250C0 332.843 67.1573 400 150 400Z"
+            />
+          </clipPath>
         </defs>
       </svg>
 
-      {/* Decorative blob */}
-      <svg
-        className="absolute -left-16 top-0 h-64 w-64 opacity-15"
-        viewBox="0 0 300 300"
-        fill="none"
-      >
-        <path
-          d="M200 150C200 210 170 260 130 270C90 280 40 240 20 180C0 120 40 50 100 30C160 10 200 70 200 150Z"
-          fill="var(--monte-carlo)"
-        />
-      </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
         <SectionIntroLabel>Remember when</SectionIntroLabel>
@@ -38,19 +42,19 @@ export default function RememberWhen() {
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
           {[
-            "/images/pexels-kindelmedia-7148409 1.png",
-            "/images/pexels-shvets-production-7533377 1.png",
-            "/images/pexels-guilhermealmeida-1858175.png",
-          ].map((src, i) => (
+            { src: "/images/pexels-kindelmedia-7148409 1.png", mask: "mask-1" },
+            { src: "/images/pexels-shvets-production-7533377 1.png", mask: "mask-2" },
+            { src: "/images/pexels-guilhermealmeida-1858175.png", mask: "mask-3" },
+          ].map((item, i) => (
             <div
               key={i}
-              className="masked-container w-[197px] h-[225px] md:w-[263px] md:h-[300px]"
+              className="relative w-[197px] h-[225px] md:w-[263px] md:h-[300px] overflow-hidden"
+              style={{ clipPath: `url(#${item.mask})` }}
             >
               <img
-                src={src}
+                src={item.src}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{ width: "140%", height: "140%", top: "-20%", left: "-20%" }}
+                className="h-full w-full object-cover object-center"
               />
             </div>
           ))}

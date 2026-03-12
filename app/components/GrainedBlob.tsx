@@ -59,7 +59,7 @@ export default function GrainedBlob({ className }: GrainedBlobProps) {
             result="noise1Clipped"
           />
           <feFlood
-            floodColor="color-mix(in srgb, var(--cotton-candy) 93%, black)"
+            floodColor="color-mix(in srgb, var(--cotton-candy) 75%, #DF6666)"
             result="color1Flood"
           />
           <feComposite
