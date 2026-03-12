@@ -3,31 +3,30 @@
 import { useState, useEffect } from "react";
 import NavLink from "./ui/NavLink";
 
-const words = ["people", "media", "communities"];
+const slides = [
+  { word: "people", image: "/images/pexels-kindelmedia-7148409 1.png" },
+  { word: "media", image: "/images/pexels-shvets-production-7533377 1.png" },
+  { word: "communities", image: "/images/pexels-guilhermealmeida-1858175.png" },
+];
 
 export default function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % words.length);
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <section className="relative min-h-screen px-6 pt-28 pb-20">
-      {/* Tangerine blob */}
-      <svg
+      {/* Grained star blob */}
+      <img
+        src="/shapes/star-grained.svg"
+        alt=""
         className="absolute -right-20 top-20 h-[500px] w-[500px] opacity-30"
-        viewBox="0 0 500 500"
-        fill="none"
-      >
-        <path
-          d="M400 250C400 340 340 420 250 440C160 460 80 400 60 300C40 200 100 100 200 60C300 20 400 100 420 200C430 230 400 250 400 250Z"
-          fill="var(--tangerine-dream)"
-        />
-      </svg>
+      />
 
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-12">
@@ -40,9 +39,9 @@ export default function Hero() {
                 <span className="stage-heading-1 block text-left">Connect</span>
                 <span className="stage-heading-1 block text-right">with</span>
                 <span className="relative block text-right">
-                  {words.map((word, index) => (
+                  {slides.map((slide, index) => (
                     <span
-                      key={word}
+                      key={slide.word}
                       className="stage-heading-2 absolute right-0 top-0 transition-all duration-500"
                       style={{
                         opacity: currentIndex === index ? 1 : 0,
@@ -54,7 +53,7 @@ export default function Hero() {
                             : "translateY(20px)",
                       }}
                     >
-                      {word}
+                      {slide.word}
                     </span>
                   ))}
                   {/* Invisible placeholder for sizing */}
@@ -119,11 +118,15 @@ export default function Hero() {
               className="relative w-[160%] aspect-square -mr-[50%]"
               style={{ clipPath: "url(#hero-blob)", transform: "translate(20%, -14%)" }}
             >
-              <img
-                src="/images/pexels-kindelmedia-7148409 1.png"
-                alt="People connecting"
-                className="h-full w-full object-cover"
-              />
+              {slides.map((slide, index) => (
+                <img
+                  key={slide.word}
+                  src={slide.image}
+                  alt={`People ${slide.word}`}
+                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
+                  style={{ opacity: currentIndex === index ? 1 : 0 }}
+                />
+              ))}
             </div>
           </div>
         </div>
