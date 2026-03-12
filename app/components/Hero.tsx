@@ -114,7 +114,7 @@ export default function Hero() {
 
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
+              className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)] overflow-hidden"
               style={{ clipPath: "url(#hero-blob)" }}
             >
               {slides.map((slide, index) => (
@@ -122,8 +122,13 @@ export default function Hero() {
                   key={slide.word}
                   src={slide.image}
                   alt={`People ${slide.word}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
-                  style={{ opacity: currentIndex === index ? 1 : 0 }}
+                  className="absolute inset-[-12%] h-[124%] w-[124%] object-cover"
+                  style={{
+                    transition: "opacity 500ms ease-out, transform 3000ms ease-out",
+                    opacity: currentIndex === index ? 1 : 0,
+                    transform:
+                      currentIndex === index ? "scale(1)" : "scale(1.06)",
+                  }}
                 />
               ))}
             </div>
