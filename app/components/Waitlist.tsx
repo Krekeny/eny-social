@@ -4,14 +4,14 @@ import ButtonCta from "./ui/ButtonCta";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 
 const avatars = [
-  { top: "8%", left: "10%", size: 48, delay: 0, img: "https://stinkhorn.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:vmqt4a4pf5jxvtalzjz2zsqk&cid=bafkreifed32u3tuknqoywdqij24vm4jqn35pvkx3q6spmqqoxiv654wtva" },
-  { top: "15%", right: "12%", size: 40, delay: 1.2, img: "https://calocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xrdmnk5t6y5l2n3zq5pok4ua&cid=bafkreibddkvunzwhhtloccrzia6ugllqq7bow435sjclvhbhhkmwqu2d4a" },
-  { top: "60%", left: "5%", size: 36, delay: 0.8, img: "https://panus.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:35gbbt2mb36gsl62tduilory&cid=bafkreigfixmlz4ynckkwtzuvxmowbozwlokr2aapgm36ne5sse4tzhxf3u" },
-  { top: "70%", right: "8%", size: 44, delay: 2, img: "https://agrocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:ymdvhm76z46uamksi25rffeh&cid=bafkreifp66m5ihkxuthf4vwo6b5ao3evl52fbezsvfkfucxedox3a7joli" },
-  { top: "35%", left: "85%", size: 32, delay: 1.5 },
-  { top: "80%", left: "20%", size: 38, delay: 0.4 },
-  { top: "25%", left: "3%", size: 42, delay: 1.8 },
-  { top: "50%", right: "3%", size: 34, delay: 0.6 },
+  { top: "8%", left: "20%", size: 48, delay: 0, img: "https://stinkhorn.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:vmqt4a4pf5jxvtalzjz2zsqk&cid=bafkreifed32u3tuknqoywdqij24vm4jqn35pvkx3q6spmqqoxiv654wtva" },
+  { top: "15%", right: "20%", size: 40, delay: 1.2, img: "https://calocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xrdmnk5t6y5l2n3zq5pok4ua&cid=bafkreibddkvunzwhhtloccrzia6ugllqq7bow435sjclvhbhhkmwqu2d4a" },
+  { top: "60%", left: "15%", size: 36, delay: 0.8, img: "https://panus.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:35gbbt2mb36gsl62tduilory&cid=bafkreigfixmlz4ynckkwtzuvxmowbozwlokr2aapgm36ne5sse4tzhxf3u" },
+  { top: "70%", right: "18%", size: 44, delay: 2, img: "https://agrocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:ymdvhm76z46uamksi25rffeh&cid=bafkreifp66m5ihkxuthf4vwo6b5ao3evl52fbezsvfkfucxedox3a7joli" },
+  { top: "35%", left: "75%", size: 32, delay: 1.5 },
+  { top: "80%", left: "28%", size: 38, delay: 0.4 },
+  { top: "25%", left: "12%", size: 42, delay: 1.8 },
+  { top: "50%", right: "14%", size: 34, delay: 0.6 },
 ];
 
 const colors = [
