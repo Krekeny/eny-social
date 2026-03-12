@@ -4,10 +4,10 @@ import ButtonCta from "./ui/ButtonCta";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 
 const avatars = [
-  { top: "8%", left: "10%", size: 48, delay: 0 },
-  { top: "15%", right: "12%", size: 40, delay: 1.2 },
-  { top: "60%", left: "5%", size: 36, delay: 0.8 },
-  { top: "70%", right: "8%", size: 44, delay: 2 },
+  { top: "8%", left: "10%", size: 48, delay: 0, img: "https://stinkhorn.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:vmqt4a4pf5jxvtalzjz2zsqk&cid=bafkreifed32u3tuknqoywdqij24vm4jqn35pvkx3q6spmqqoxiv654wtva" },
+  { top: "15%", right: "12%", size: 40, delay: 1.2, img: "https://calocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xrdmnk5t6y5l2n3zq5pok4ua&cid=bafkreibddkvunzwhhtloccrzia6ugllqq7bow435sjclvhbhhkmwqu2d4a" },
+  { top: "60%", left: "5%", size: 36, delay: 0.8, img: "https://panus.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:35gbbt2mb36gsl62tduilory&cid=bafkreigfixmlz4ynckkwtzuvxmowbozwlokr2aapgm36ne5sse4tzhxf3u" },
+  { top: "70%", right: "8%", size: 44, delay: 2, img: "https://agrocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:ymdvhm76z46uamksi25rffeh&cid=bafkreifp66m5ihkxuthf4vwo6b5ao3evl52fbezsvfkfucxedox3a7joli" },
   { top: "35%", left: "85%", size: 32, delay: 1.5 },
   { top: "80%", left: "20%", size: 38, delay: 0.4 },
   { top: "25%", left: "3%", size: 42, delay: 1.8 },
@@ -45,15 +45,23 @@ export default function Waitlist() {
             animationDelay: `${avatar.delay}s`,
           }}
         >
-          <div className="flex h-full items-center justify-center text-white/50">
-            <svg
-              className="h-1/2 w-1/2"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
-            </svg>
-          </div>
+          {"img" in avatar && avatar.img ? (
+            <img
+              src={avatar.img}
+              alt=""
+              className="h-full w-full rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-white/50">
+              <svg
+                className="h-1/2 w-1/2"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
+              </svg>
+            </div>
+          )}
         </div>
       ))}
 
@@ -78,18 +86,6 @@ export default function Waitlist() {
         />
       </svg>
 
-      {/* Small blob accents */}
-      <svg
-        className="absolute left-1/4 top-1/4 h-24 w-24 opacity-10"
-        viewBox="0 0 100 100"
-        fill="none"
-      >
-        <path
-          d="M70 50C70 70 60 85 50 90C40 95 20 80 15 60C10 40 25 15 45 10C65 5 70 25 70 50Z"
-          fill="var(--pacific-blue)"
-        />
-      </svg>
-
       <div className="relative mx-auto max-w-2xl text-center">
         <SectionIntroLabel>Come on in</SectionIntroLabel>
 
@@ -103,7 +99,7 @@ export default function Waitlist() {
           data, and your voice.
         </p>
 
-        <ButtonCta href="#" className="mt-10">join the waitlist</ButtonCta>
+        <ButtonCta href="#" variant="ghost" className="mt-10">join the waitlist</ButtonCta>
       </div>
     </section>
   );
