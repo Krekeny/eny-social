@@ -1,4 +1,7 @@
+"use client";
+
 import SectionIntroLabel from "./ui/SectionIntroLabel";
+import ButtonCta from "./ui/ButtonCta";
 
 export default function StartingInOffenbach() {
   return (
@@ -24,9 +27,14 @@ export default function StartingInOffenbach() {
         </h2>
 
         <p className="section-copy mx-auto mt-8 max-w-2xl">
-          Find your neighbors, discover local events, navigate city services — from finding an
-          apartment to figuring out trash collection day. Everything Offenbach, in one place.
+          Find your neighbors, discover local events, navigate city services
+          from finding an apartment to figuring out trash collection day.
+          Everything Offenbach, in one place.
         </p>
+
+        <ButtonCta href="/offenbach" variant="ghost" className="mt-10">
+          discover Offenbach
+        </ButtonCta>
       </div>
     </section>
   );
