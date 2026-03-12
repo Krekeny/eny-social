@@ -56,7 +56,7 @@ export default function Waitlist() {
       {avatars.map((avatar, i) => (
         <div
           key={i}
-          className={`absolute rounded-full ${colors[i]} opacity-90`}
+          className={`absolute rounded-full ${colors[i]} opacity-40 lg:opacity-90`}
           style={{
             top: avatar.top,
             left: "left" in avatar ? avatar.left : undefined,
