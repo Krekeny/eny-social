@@ -18,7 +18,7 @@ export default function Nav() {
         scrolled ? "bg-linen/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-[1536px] items-center justify-between px-6 py-4">
         <div className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-tangerine" />
           <span className="text-xl font-medium text-charcoal">eny.social</span>

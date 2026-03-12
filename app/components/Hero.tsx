@@ -25,7 +25,7 @@ export default function Hero() {
       {/* Grained star blob — decorative, bleeds left edge, behind text */}
       <GrainedBlob className="pointer-events-none absolute -left-[30%] -top-[10%] h-[120vh] w-[120vh]" />
 
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-[1536px]">
         <div className="grid gap-12 lg:grid-cols-12">
           {/* Heading + Text (6 cols) */}
           <div className="lg:col-span-6">
@@ -62,7 +62,7 @@ export default function Hero() {
             {/* Menu + sub-text side by side */}
             <div className="mt-12 grid lg:grid-cols-6 gap-4">
               {/* Menu links */}
-              <div className="hidden lg:col-span-2 lg:flex lg:flex-col lg:items-end">
+              <div className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end">
                 {[
                   "What",
                   "How does it work",
@@ -77,7 +77,7 @@ export default function Hero() {
               </div>
 
               {/* Sub-heading + body */}
-              <div className="lg:col-span-4">
+              <div className="lg:col-span-5 lg:pl-[calc(100%/5)]">
                 <h2 className="mb-3">
                   A social network that belongs to the people.
                 </h2>
@@ -112,10 +112,10 @@ export default function Hero() {
             </svg>
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-[160%] aspect-square -mr-[50%]"
+              className="relative w-[180%] aspect-square -mr-[80%]"
               style={{
                 clipPath: "url(#hero-blob)",
-                transform: "translate(20%, -14%)",
+                transform: "translate(10%, -14%)",
               }}
             >
               {slides.map((slide, index) => (
