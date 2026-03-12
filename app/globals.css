@@ -79,7 +79,7 @@ body {
 /* Stage Heading 1 — Sans, bold */
 .stage-heading-1 {
   font-family: var(--font-instrument-sans);
-  font-size: 130px;
+  font-size: 56px;
   font-style: normal;
   font-weight: 700;
   line-height: 105%;
@@ -89,28 +89,38 @@ body {
 /* Stage Heading 2 — Serif, regular */
 .stage-heading-2 {
   font-family: var(--font-instrument-serif);
-  font-size: 150px;
+  font-size: 64px;
   font-style: normal;
   font-weight: 400;
   line-height: 100%;
   color: var(--charcoal);
 }
 
-/* Responsive scaling for stage headings */
-@media (max-width: 1024px) {
+@media (min-width: 480px) {
   .stage-heading-1 {
-    font-size: 90px;
+    font-size: 80px;
   }
   .stage-heading-2 {
-    font-size: 100px;
+    font-size: 96px;
   }
 }
-@media (max-width: 640px) {
+
+@media (min-width: 640px) {
   .stage-heading-1 {
-    font-size: 56px;
+    font-size: 100px;
   }
   .stage-heading-2 {
-    font-size: 64px;
+    font-size: 120px;
+  }
+}
+
+/* Responsive scaling for stage headings */
+@media (min-width: 1024px) {
+  .stage-heading-1 {
+    font-size: 130px;
+  }
+  .stage-heading-2 {
+    font-size: 150px;
   }
 }
 
