@@ -91,19 +91,13 @@ export default function Hero() {
 
           {/* Image (6 cols) — bleeds top + right, blob visible on left + bottom */}
           <div className="relative lg:col-span-6 lg:overflow-visible">
-            {/* Blob clip path definition */}
-            <svg className="absolute h-0 w-0" aria-hidden="true">
-              <defs>
-                <clipPath id="hero-blob" clipPathUnits="objectBoundingBox">
-                  <path d="M0.9502,0.5487 C1.0731,0.7445,0.9515,1.0075,0.7345,0.9473 C0.6670,0.9286,0.4922,0.9118,0.4336,0.9537 C0.2466,1.0875,0.0064,0.9066,0.0696,0.6794 C0.0894,0.6084,0.0786,0.5322,0.0403,0.4712 C-0.0826,0.2754,0.0950,0.0193,0.3119,0.0794 C0.3795,0.0982,0.4523,0.0850,0.5108,0.0431 C0.6977,-0.0907,0.9993,0.1093,0.9361,0.3364 C0.9163,0.4074,0.9119,0.4876,0.9502,0.5487Z" />
-                </clipPath>
-              </defs>
-            </svg>
-{/* Full-size blob-masked photo */}
+            {/* Full-size blob-masked photo */}
             <div
-              // className="relative w-[130%] -mr-[30%] lg:w-[170%] lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
-              className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
-              style={{ clipPath: "url(#hero-blob)" }}
+              className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)] overflow-hidden"
+              style={{
+                borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%",
+                animation: "blob-breathe 12s ease-in-out infinite",
+              }}
             >
               {slides.map((slide, index) => (
                 <img
