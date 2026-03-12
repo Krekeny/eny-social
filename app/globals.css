@@ -80,8 +80,9 @@ body {
 .stage-heading-1 {
   font-family: var(--font-instrument-sans);
   font-size: 130px;
+  font-style: normal;
   font-weight: 700;
-  line-height: normal;
+  line-height: 105%;
   color: var(--charcoal);
 }
 
@@ -89,8 +90,9 @@ body {
 .stage-heading-2 {
   font-family: var(--font-instrument-serif);
   font-size: 150px;
+  font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: 100%;
   color: var(--charcoal);
 }
 

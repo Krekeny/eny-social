@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NavLink from "./ui/NavLink";
+import GrainedBlob from "./GrainedBlob";
 
 const slides = [
   { word: "people", image: "/images/pexels-kindelmedia-7148409 1.png" },
@@ -22,11 +23,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen px-6 pt-28 pb-20">
       {/* Grained star blob — decorative, bleeds left edge, behind text */}
-      <img
-        src="/shapes/star-grained.svg"
-        alt=""
-        className="pointer-events-none absolute -left-[30%] -top-[10%] h-[120vh] w-[120vh]"
-      />
+      <GrainedBlob className="pointer-events-none absolute -left-[30%] -top-[10%] h-[120vh] w-[120vh]" />
 
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-12">
