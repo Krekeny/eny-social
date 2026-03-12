@@ -112,7 +112,8 @@ export default function Hero() {
             </svg>
             {/* Full-size blob-masked photo */}
             <div
-              className="relative w-full lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
+              // className="relative w-[130%] -mr-[30%] lg:w-[170%] lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
+              className="relative w-[130%] -mr-[30%] lg:w-[170%] aspect-square lg:-mr-[70%] lg:[transform:translate(2%,-20%)]"
               style={{ clipPath: "url(#hero-blob)" }}
             >
               {slides.map((slide, index) => (
