@@ -42,7 +42,7 @@ export default function WeBelieve() {
               {/* Circular photo */}
               <div className="h-48 w-48 overflow-hidden rounded-full md:h-56 md:w-56">
                 <img
-                  src="/images/pexels-shvets-production-7533377 1.png"
+                  src="/images/pexels-davner-ribeiro-2711547-4574405.jpg"
                   alt="Community"
                   className="h-full w-full object-cover"
                 />

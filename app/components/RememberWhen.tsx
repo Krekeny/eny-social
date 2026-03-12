@@ -30,7 +30,6 @@ export default function RememberWhen() {
         </defs>
       </svg>
 
-
       <div className="relative mx-auto max-w-4xl text-center">
         <SectionIntroLabel>Remember when</SectionIntroLabel>
 
@@ -42,9 +41,21 @@ export default function RememberWhen() {
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
           {[
-            { src: "/images/pexels-kindelmedia-7148409 1.png", mask: "mask-1" },
-            { src: "/images/pexels-shvets-production-7533377 1.png", mask: "mask-2" },
-            { src: "/images/pexels-guilhermealmeida-1858175.png", mask: "mask-3" },
+            {
+              src: "/images/pexels-shvets-production-7194971.jpg",
+              mask: "mask-1",
+              position: "bottom" as const,
+            },
+            {
+              src: "/images/pexels-didsss-7664407.jpg",
+              mask: "mask-2",
+              position: "center" as const,
+            },
+            {
+              src: "/images/pexels-shvets-production-7533377 1.png",
+              mask: "mask-3",
+              position: "top" as const,
+            },
           ].map((item, i) => (
             <div
               key={i}
@@ -54,7 +65,8 @@ export default function RememberWhen() {
               <img
                 src={item.src}
                 alt=""
-                className="h-full w-full object-cover object-center"
+                className="h-full w-full object-cover"
+                style={{ objectPosition: item.position }}
               />
             </div>
           ))}

@@ -6,8 +6,9 @@ import GrainedBlob from "./GrainedBlob";
 
 const slides = [
   { word: "people", image: "/images/pexels-kindelmedia-7148409 1.png" },
-  { word: "media", image: "/images/pexels-shvets-production-7533377 1.png" },
-  { word: "communities", image: "/images/pexels-guilhermealmeida-1858175.png" },
+  { word: "media", image: "/images/pexels-ezkol-arnak-221099453-12569692.jpg" },
+  { word: "communities", image: "/images/pexels-gabby-k-5384621.jpg" },
+  { word: "services", image: "/images/pexels-guilhermealmeida-1858175.png" },
 ];
 
 export default function Hero() {
