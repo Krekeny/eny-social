@@ -3,7 +3,7 @@ import SectionIntroLabel from "./ui/SectionIntroLabel";
 export default function WeBelieve() {
   return (
     <section className="relative px-6 py-24">
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-4xl">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Text */}
           <div>
