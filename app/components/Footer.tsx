@@ -1,18 +1,23 @@
 "use client";
 
 import { LinkedinLogo, InstagramLogo } from "@phosphor-icons/react";
-import NavLink from "./ui/NavLink";
+import NavMenu from "./ui/NavMenu";
 
 export default function Footer() {
   return (
     <footer className="border-t border-charcoal/10 px-6 py-8">
       <div className="mx-auto grid max-w-[1536px] grid-cols-3 items-center gap-6 px-6">
         {/* Links */}
-        <div className="flex flex-col items-start gap-0">
-          <NavLink href="#">imprint</NavLink>
-          <NavLink href="#">support</NavLink>
-          <NavLink href="#">privacy</NavLink>
-        </div>
+        <NavMenu
+          items={[
+            { label: "imprint", href: "#" },
+            { label: "support", href: "#" },
+            { label: "privacy", href: "#" },
+          ]}
+          className="flex flex-col items-start gap-0"
+          baseDelay={0}
+          stagger={80}
+        />
 
         {/* Social icons */}
         <div className="flex items-center justify-center gap-4">

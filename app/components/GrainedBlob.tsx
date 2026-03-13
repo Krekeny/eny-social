@@ -49,7 +49,7 @@ export default function GrainedBlob({ className }: GrainedBlobProps) {
             type="fractalNoise"
             baseFrequency="0.75 0.75"
             stitchTiles="stitch"
-            numOctaves={3}
+            numOctaves={1}
             result="noise"
             seed={939}
           />

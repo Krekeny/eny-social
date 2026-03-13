@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NavLink from "./ui/NavLink";
 import GrainedBlob from "./GrainedBlob";
 import FadeIn from "./ui/FadeIn";
+import NavMenu from "./ui/NavMenu";
 
 const slides = [
   { word: "people", image: "/images/pexels-kindelmedia-7148409 1.png" },
@@ -33,60 +33,76 @@ export default function Hero() {
           <div className="relative z-10 lg:col-span-6">
             {/* Heading indented 1 col */}
             <div className="lg:pl-[calc(100%/6)]">
-              <p className="headline-label mb-4">a place where you can</p>
+              <FadeIn>
+                <p className="headline-label mb-4">a place where you can</p>
+              </FadeIn>
               <h1>
-                <span className="stage-heading-1 block text-left">Connect</span>
-                <span className="stage-heading-1 block text-right">with</span>
-                <span className="relative block text-right">
-                  {slides.map((slide, index) => (
-                    <span
-                      key={slide.word}
-                      className="stage-heading-2 absolute right-0 top-0 transition-all duration-500"
-                      style={{
-                        opacity: currentIndex === index ? 1 : 0,
-                        transform:
-                          currentIndex === index
-                            ? "translateY(0)"
-                            : currentIndex > index
-                            ? "translateY(-20px)"
-                            : "translateY(20px)",
-                      }}
-                    >
-                      {slide.word}
+                <FadeIn delay={100}>
+                  <span className="stage-heading-1 block text-left">
+                    Connect
+                  </span>
+                </FadeIn>
+                <FadeIn delay={200}>
+                  <span className="stage-heading-1 block text-right">with</span>
+                </FadeIn>
+                <FadeIn delay={300}>
+                  <span className="relative block text-right">
+                    {slides.map((slide, index) => (
+                      <span
+                        key={slide.word}
+                        className="stage-heading-2 absolute right-0 top-0 transition-all duration-500"
+                        style={{
+                          opacity: currentIndex === index ? 1 : 0,
+                          transform:
+                            currentIndex === index
+                              ? "translateY(0)"
+                              : currentIndex > index
+                              ? "translateY(-20px)"
+                              : "translateY(20px)",
+                        }}
+                      >
+                        {slide.word}
+                      </span>
+                    ))}
+                    {/* Invisible placeholder for sizing */}
+                    <span className="stage-heading-2 invisible">
+                      communities
                     </span>
-                  ))}
-                  {/* Invisible placeholder for sizing */}
-                  <span className="stage-heading-2 invisible">communities</span>
-                </span>
+                  </span>
+                </FadeIn>
               </h1>
             </div>
 
             {/* Menu + sub-text side by side */}
             <div className="mt-12 grid lg:grid-cols-6 gap-4">
               {/* Menu links */}
-              <div className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end">
-                {[
-                  "What",
-                  "How does it work",
-                  "offenbach.social",
-                  "Blog",
-                  "Contact",
-                ].map((link) => (
-                  <NavLink key={link} href="#">
-                    {link}
-                  </NavLink>
-                ))}
-              </div>
+              <NavMenu
+                items={[
+                  { label: "What", href: "#" },
+                  { label: "How does it work", href: "#" },
+                  { label: "offenbach.social", href: "#" },
+                  { label: "Blog", href: "#" },
+                  { label: "Contact", href: "#" },
+                ]}
+                className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end"
+                itemClassName="self-end text-right"
+                baseDelay={400}
+                stagger={80}
+              />
 
               {/* Sub-heading + body */}
               <div className="lg:col-span-5 lg:pl-[calc(100%/5)]">
-                <h2 className="mb-3">
-                  A social network that belongs to the people.
-                </h2>
-                <p className="section-copy lg:pl-[calc(100%/4)] text-right">
-                  <strong>No algorithms</strong> shaping your reality.
-                  Decentralized. Built and hosted in <strong>Europe</strong>.
-                </p>
+                <FadeIn delay={500}>
+                  <h2 className="mb-3">
+                    A social network that belongs to the people.
+                  </h2>
+                </FadeIn>
+                <FadeIn delay={600}>
+                  <p className="section-copy lg:pl-[calc(100%/4)] text-right">
+                    <strong>No algorithms</strong> shaping your reality.
+                    Decentralized. Built and hosted in <strong>Europe</strong>.
+                  </p>
+                </FadeIn>
               </div>
             </div>
           </div>
@@ -126,7 +142,8 @@ export default function Hero() {
                   alt={`People ${slide.word}`}
                   className="absolute inset-[-12%] h-[124%] w-[124%] object-cover"
                   style={{
-                    transition: "opacity 500ms ease-out, transform 3000ms ease-out",
+                    transition:
+                      "opacity 500ms ease-out, transform 3000ms ease-out",
                     opacity: currentIndex === index ? 1 : 0,
                     transform:
                       currentIndex === index ? "scale(1)" : "scale(1.06)",
