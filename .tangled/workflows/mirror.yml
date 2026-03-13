@@ -16,5 +16,5 @@ steps:
   - name: "Mirror to a different CI Repository"
     command: |
       git fetch --unshallow || true
-      git remote add gitlab https://oauth2:$ACCESS_TOKEN@$GIT_REPOSITORY
-      git push gitlab HEAD:refs/heads/mirror/main --force
+      git remote add github https://x-access-token:$ACCESS_TOKEN@$GIT_REPOSITORY
+      git push github HEAD:refs/heads/mirror/main --force
