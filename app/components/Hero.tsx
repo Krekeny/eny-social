@@ -78,11 +78,10 @@ export default function Hero() {
               {/* Menu links */}
               <NavMenu
                 items={[
-                  { label: "What", href: "#" },
-                  { label: "How does it work", href: "#" },
-                  { label: "offenbach.social", href: "#" },
-                  { label: "Blog", href: "#" },
-                  { label: "Contact", href: "#" },
+                  { label: "What", href: "#what" },
+                  { label: "Values", href: "#values" },
+                  { label: "offenbach.social", href: "/offenbach" },
+                  { label: "Waitlist", href: "#waitlist" },
                 ]}
                 className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end"
                 itemClassName="self-end text-right"

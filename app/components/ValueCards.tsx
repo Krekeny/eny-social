@@ -34,7 +34,7 @@ export default function ValueCards() {
   ];
 
   return (
-    <section className="relative py-24">
+    <section id="values" className="relative py-24">
       {/* Grain filter definition */}
       <svg className="absolute h-0 w-0" aria-hidden="true">
         <defs>
