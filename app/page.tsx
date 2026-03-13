@@ -11,7 +11,7 @@ import GrainedBlob from "./components/GrainedBlob";
 
 export default function Home() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Nav />
       <main className="relative z-10">
         <Hero />
@@ -28,6 +28,6 @@ export default function Home() {
           <Footer />
         </div>
       </div>
-    </>
+    </div>
   );
 }
