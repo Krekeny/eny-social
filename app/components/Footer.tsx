@@ -7,7 +7,7 @@ import FadeIn from "./ui/FadeIn";
 export default function Footer() {
   return (
     <footer className="px-6 py-8">
-      <div className="mx-auto grid max-w-[1536px] grid-cols-3 items-center gap-6 px-6">
+      <div className="mx-auto grid max-w-[1536px] grid-cols-2 lg:grid-cols-3 items-center gap-6 px-6">
         {/* Links */}
         <NavMenu
           items={[
@@ -21,7 +21,7 @@ export default function Footer() {
         />
 
         {/* Social icons */}
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-end lg:justify-center gap-4">
           <FadeIn delay={320}>
             <a
               href="https://bsky.app/profile/eny.social"
@@ -60,8 +60,8 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <FadeIn delay={600}>
-          <p className="text-right text-sm text-charcoal">
+        <FadeIn delay={600} className="col-span-2 lg:col-span-1">
+          <p className="text-center text-sm text-charcoal lg:text-right">
             &copy; {new Date().getFullYear()} made by krekeny in Offenbach
           </p>
         </FadeIn>
