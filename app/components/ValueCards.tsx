@@ -1,5 +1,5 @@
 import FadeIn from "./ui/FadeIn";
-import { GRAIN_ENABLED } from "./ui/GrainFilter";
+import { GRAIN_ENABLED, grainStyle } from "./ui/GrainFilter";
 
 export default function ValueCards() {
   const cards = [
@@ -63,13 +63,8 @@ export default function ValueCards() {
               {GRAIN_ENABLED && (
                 <div
                   className="pointer-events-none absolute inset-0"
-                  style={{ filter: "url(#grain)" }}
-                >
-                  <div
-                    className="h-full w-full"
-                    style={{ backgroundColor: card.bg }}
-                  />
-                </div>
+                  style={grainStyle}
+                />
               )}
               {(card.label || card.body) && (
                 <div

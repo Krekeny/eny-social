@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import FadeIn from "../components/ui/FadeIn";
 import SectionIntroLabel from "../components/ui/SectionIntroLabel";
 import ButtonCta from "../components/ui/ButtonCta";
+import { GRAIN_ENABLED, grainStyle } from "../components/ui/GrainFilter";
 
 export default function OffenbachPage() {
   const features = [
@@ -69,11 +70,19 @@ export default function OffenbachPage() {
               {features.map((feature, i) => (
                 <FadeIn key={feature.title} delay={i * 100}>
                   <div
-                    className="rounded-3xl p-8"
+                    className="relative overflow-hidden rounded-3xl p-8"
                     style={{ backgroundColor: feature.color }}
                   >
-                    <h3 className="headline-label mb-4">{feature.title}</h3>
-                    <p className="section-copy">{feature.description}</p>
+                    {GRAIN_ENABLED && (
+                      <div
+                        className="pointer-events-none absolute inset-0"
+                        style={grainStyle}
+                      />
+                    )}
+                    <div className="relative">
+                      <h3 className="headline-label mb-4">{feature.title}</h3>
+                      <p className="section-copy">{feature.description}</p>
+                    </div>
                   </div>
                 </FadeIn>
               ))}

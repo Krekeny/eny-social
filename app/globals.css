@@ -210,6 +210,11 @@ h2 {
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: from-font;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--pacific-blue);
 }
 
 /* Quote */

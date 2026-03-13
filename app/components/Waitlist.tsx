@@ -144,11 +144,14 @@ export default function Waitlist() {
             width: avatar.size,
             height: avatar.size,
             transitionDelay: isVisible ? `${i * 120}ms` : "0ms",
-            animation: isVisible
-              ? `${i % 2 === 0 ? "float" : "float-slow"} ${
-                  6 + i
-                }s ease-in-out infinite`
+            animationName: isVisible
+              ? i % 2 === 0
+                ? "float"
+                : "float-slow"
               : "none",
+            animationDuration: `${6 + i}s`,
+            animationTimingFunction: "ease-in-out",
+            animationIterationCount: "infinite",
             animationDelay: `${avatar.delay}s`,
           }}
         >

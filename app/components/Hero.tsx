@@ -103,9 +103,7 @@ export default function Hero() {
                     </strong>{" "}
                     shaping your reality.
                     <br />
-                    Built and hosted in <strong>Europe</strong>.
-                    <br />
-                    Decentralized.
+                    Decentralized. Built and hosted in <strong>Europe</strong>.
                   </p>
                 </FadeIn>
               </div>
