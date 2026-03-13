@@ -232,7 +232,7 @@ export default function Waitlist() {
             <button
               type="submit"
               disabled={loading}
-              className="group inline-flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[18px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-all hover:bg-transparent hover:text-charcoal"
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[18px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-all hover:bg-transparent hover:text-charcoal"
             >
               join
               <ArrowCircleRightIcon
