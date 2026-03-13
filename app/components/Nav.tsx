@@ -19,10 +19,9 @@ export default function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-[1536px] items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-tangerine" />
-          <span className="text-xl font-medium text-charcoal">eny.social</span>
-        </div>
+        <a href="/" className="flex items-center">
+          <img src="/logos/eny-logo-variant.svg" alt="eny.social" className="h-10" />
+        </a>
         <ButtonCta href="/#waitlist">join the waitlist</ButtonCta>
       </div>
     </nav>
