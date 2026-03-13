@@ -27,7 +27,7 @@ export default function Footer() {
               href="https://bsky.app/profile/eny.social"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-charcoal/50 transition-colors hover:text-pacific"
+              className="text-charcoal/50 transition-colors hover:text-dusk"
               aria-label="Bluesky"
             >
               <svg className="h-8 w-8" viewBox="0 0 568 501" fill="currentColor">
@@ -40,7 +40,7 @@ export default function Footer() {
               href="https://www.linkedin.com/company/krekeny/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-charcoal/50 transition-colors hover:text-pacific"
+              className="text-charcoal/50 transition-colors hover:text-dusk"
               aria-label="LinkedIn"
             >
               <LinkedinLogo className="h-9 w-9" weight="regular" />
@@ -51,7 +51,7 @@ export default function Footer() {
               href="https://instagram.com/krekeny"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-charcoal/50 transition-colors hover:text-pacific"
+              className="text-charcoal/50 transition-colors hover:text-dusk"
               aria-label="Instagram"
             >
               <InstagramLogo className="h-9 w-9" weight="regular" />
