@@ -98,8 +98,14 @@ export default function Hero() {
                 </FadeIn>
                 <FadeIn delay={600}>
                   <p className="section-copy lg:pl-[calc(100%/4)] text-right">
-                    <strong>No algorithms</strong> shaping your reality.
-                    Decentralized. Built and hosted in <strong>Europe</strong>.
+                    <strong>
+                      <strike>No algorithms</strike>
+                    </strong>{" "}
+                    shaping your reality.
+                    <br />
+                    Built and hosted in <strong>Europe</strong>.
+                    <br />
+                    Decentralized.
                   </p>
                 </FadeIn>
               </div>
