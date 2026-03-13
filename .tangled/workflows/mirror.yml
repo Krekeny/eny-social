@@ -5,6 +5,9 @@ when:
 
 engine: "nixery"
 
+clone:
+  depth: 0
+
 dependencies:
   nixpkgs:
     - git
