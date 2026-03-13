@@ -1,4 +1,7 @@
+"use client";
+
 import SectionIntroLabel from "./ui/SectionIntroLabel";
+import FadeIn from "./ui/FadeIn";
 
 export default function WeBelieve() {
   return (
@@ -7,56 +10,64 @@ export default function WeBelieve() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Text */}
           <div>
-            <SectionIntroLabel>We believe</SectionIntroLabel>
+            <FadeIn>
+              <SectionIntroLabel>We believe</SectionIntroLabel>
+            </FadeIn>
 
-            <h2 className="mt-6">
-              Your feed.
-              <br />
-              Your data.
-              <br />
-              <span className="italic text-pacific">Your voice.</span>
-            </h2>
+            <FadeIn delay={100}>
+              <h2 className="mt-6">
+                Your feed.
+                <br />
+                Your data.
+                <br />
+                <span className="italic text-pacific">Your voice.</span>
+              </h2>
+            </FadeIn>
 
-            <p className="section-copy mt-8 max-w-lg">
-              The algorithms shaping your reality shouldn't be controlled by
-              shareholders in Silicon Valley. At eny.social, you own your feed,
-              your data, and your voice.
-            </p>
+            <FadeIn delay={200}>
+              <p className="section-copy mt-8 max-w-lg">
+                The algorithms shaping your reality shouldn&apos;t be controlled by
+                shareholders in Silicon Valley. At eny.social, you own your feed,
+                your data, and your voice.
+              </p>
+            </FadeIn>
           </div>
 
           {/* Photos + blob */}
-          <div className="relative">
-            {/* Monte Carlo blob */}
-            <svg
-              className="absolute -right-12 -top-12 h-80 w-80 opacity-20"
-              viewBox="0 0 400 400"
-              fill="none"
-            >
-              <path
-                d="M300 200C300 280 260 340 200 360C140 380 60 320 40 240C20 160 80 60 160 40C240 20 300 100 300 200Z"
-                fill="var(--monte-carlo)"
-              />
-            </svg>
+          <FadeIn delay={300} direction="right">
+            <div className="relative">
+              {/* Monte Carlo blob */}
+              <svg
+                className="absolute -right-12 -top-12 h-80 w-80 opacity-20"
+                viewBox="0 0 400 400"
+                fill="none"
+              >
+                <path
+                  d="M300 200C300 280 260 340 200 360C140 380 60 320 40 240C20 160 80 60 160 40C240 20 300 100 300 200Z"
+                  fill="var(--monte-carlo)"
+                />
+              </svg>
 
-            <div className="relative flex items-center justify-center gap-4">
-              {/* Circular photo */}
-              <div className="h-48 w-48 overflow-hidden rounded-full md:h-56 md:w-56">
-                <img
-                  src="/images/pexels-davner-ribeiro-2711547-4574405.jpg"
-                  alt="Community"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              {/* Rounded rectangle photo */}
-              <div className="h-56 w-40 overflow-hidden rounded-3xl md:h-64 md:w-44">
-                <img
-                  src="/images/pexels-guilhermealmeida-1858175.png"
-                  alt="Connection"
-                  className="h-full w-full object-cover"
-                />
+              <div className="relative flex items-center justify-center gap-4">
+                {/* Circular photo */}
+                <div className="h-48 w-48 overflow-hidden rounded-full md:h-56 md:w-56">
+                  <img
+                    src="/images/pexels-davner-ribeiro-2711547-4574405.jpg"
+                    alt="Community"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                {/* Rounded rectangle photo */}
+                <div className="h-56 w-40 overflow-hidden rounded-3xl md:h-64 md:w-44">
+                  <img
+                    src="/images/pexels-guilhermealmeida-1858175.png"
+                    alt="Connection"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </div>
 

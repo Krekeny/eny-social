@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import NavLink from "./ui/NavLink";
 import GrainedBlob from "./GrainedBlob";
+import FadeIn from "./ui/FadeIn";
 
 const slides = [
   { word: "people", image: "/images/pexels-kindelmedia-7148409 1.png" },

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState, useEffect } from "react";
 import ButtonCta from "./ui/ButtonCta";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 
@@ -50,22 +51,48 @@ const colors = [
 ];
 
 export default function Waitlist() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="waitlist" className="relative overflow-hidden px-6 py-32">
+    <section
+      ref={sectionRef}
+      id="waitlist"
+      className="relative overflow-hidden px-6 py-32"
+    >
       {/* Floating avatars */}
       {avatars.map((avatar, i) => (
         <div
           key={i}
-          className={`absolute rounded-full ${colors[i]} opacity-40 lg:opacity-90`}
+          className={`absolute rounded-full ${colors[i]} transition-all duration-700 ease-out ${
+            isVisible ? "opacity-40 lg:opacity-90 scale-100" : "opacity-0 scale-0"
+          }`}
           style={{
             top: avatar.top,
             left: "left" in avatar ? avatar.left : undefined,
             right: "right" in avatar ? avatar.right : undefined,
             width: avatar.size,
             height: avatar.size,
-            animation: `${i % 2 === 0 ? "float" : "float-slow"} ${
-              6 + i
-            }s ease-in-out infinite`,
+            transitionDelay: isVisible ? `${i * 120}ms` : "0ms",
+            animation: isVisible
+              ? `${i % 2 === 0 ? "float" : "float-slow"} ${6 + i}s ease-in-out infinite`
+              : "none",
             animationDelay: `${avatar.delay}s`,
           }}
         >
@@ -110,7 +137,11 @@ export default function Waitlist() {
         />
       </svg>
 
-      <div className="relative mx-auto max-w-2xl text-center">
+      <div className={`relative mx-auto max-w-2xl text-center transition-all duration-700 ease-out ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+        style={{ transitionDelay: isVisible ? "300ms" : "0ms" }}
+      >
         <SectionIntroLabel>Come on in</SectionIntroLabel>
 
         <h2 className="mt-6">
@@ -118,7 +149,7 @@ export default function Waitlist() {
         </h2>
 
         <p className="section-copy mx-auto mt-6 max-w-lg">
-          The algorithms shaping your reality shouldn't be controlled by
+          The algorithms shaping your reality shouldn&apos;t be controlled by
           shareholders in Silicon Valley. At eny.social, you own your feed, your
           data, and your voice.
         </p>

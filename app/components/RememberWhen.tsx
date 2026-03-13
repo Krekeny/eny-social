@@ -1,4 +1,7 @@
+"use client";
+
 import SectionIntroLabel from "./ui/SectionIntroLabel";
+import FadeIn from "./ui/FadeIn";
 
 export default function RememberWhen() {
   return (
@@ -31,12 +34,16 @@ export default function RememberWhen() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <SectionIntroLabel>Remember when</SectionIntroLabel>
+        <FadeIn>
+          <SectionIntroLabel>Remember when</SectionIntroLabel>
+        </FadeIn>
 
-        <h2 className="mt-6">
-          Social media used to be{" "}
-          <span className="italic text-tangerine">fun?</span>
-        </h2>
+        <FadeIn delay={100}>
+          <h2 className="mt-6">
+            Social media used to be{" "}
+            <span className="italic text-tangerine">fun?</span>
+          </h2>
+        </FadeIn>
 
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
@@ -57,27 +64,30 @@ export default function RememberWhen() {
               position: "top" as const,
             },
           ].map((item, i) => (
-            <div
-              key={i}
-              className="relative w-[197px] h-[225px] md:w-[263px] md:h-[300px] overflow-hidden"
-              style={{ clipPath: `url(#${item.mask})` }}
-            >
-              <img
-                src={item.src}
-                alt=""
-                className="h-full w-full object-cover"
-                style={{ objectPosition: item.position }}
-              />
-            </div>
+            <FadeIn key={i} delay={200 + i * 150}>
+              <div
+                className="relative w-[197px] h-[225px] md:w-[263px] md:h-[300px] overflow-hidden"
+                style={{ clipPath: `url(#${item.mask})` }}
+              >
+                <img
+                  src={item.src}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: item.position }}
+                />
+              </div>
+            </FadeIn>
           ))}
         </div>
 
-        <p className="section-copy mx-auto mt-12 max-w-2xl">
-          Finding new people. Discovering communities that get you. Tools that
-          actually help. Somewhere along the way, that got buried under ads,
-          algorithms, and engagement traps.{" "}
-          <strong>We&apos;re building it back.</strong>
-        </p>
+        <FadeIn delay={650}>
+          <p className="section-copy mx-auto mt-12 max-w-2xl">
+            Finding new people. Discovering communities that get you. Tools that
+            actually help. Somewhere along the way, that got buried under ads,
+            algorithms, and engagement traps.{" "}
+            <strong>We&apos;re building it back.</strong>
+          </p>
+        </FadeIn>
       </div>
 
       {/* Decorative curved line */}

@@ -2,6 +2,7 @@
 
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 import ButtonCta from "./ui/ButtonCta";
+import FadeIn from "./ui/FadeIn";
 
 export default function StartingInOffenbach() {
   return (
@@ -19,22 +20,30 @@ export default function StartingInOffenbach() {
       </svg>
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <SectionIntroLabel>Starting in Offenbach</SectionIntroLabel>
+        <FadeIn>
+          <SectionIntroLabel>Starting in Offenbach</SectionIntroLabel>
+        </FadeIn>
 
-        <h2 className="mt-6">
-          Your city. Your community.{" "}
-          <span className="italic text-tangerine">One app.</span>
-        </h2>
+        <FadeIn delay={100}>
+          <h2 className="mt-6">
+            Your city. Your community.{" "}
+            <span className="italic text-tangerine">One app.</span>
+          </h2>
+        </FadeIn>
 
-        <p className="section-copy mx-auto mt-8 max-w-2xl">
-          Find your neighbors, discover local events, navigate city services
-          from finding an apartment to figuring out trash collection day.
-          Everything Offenbach, in one place.
-        </p>
+        <FadeIn delay={200}>
+          <p className="section-copy mx-auto mt-8 max-w-2xl">
+            Find your neighbors, discover local events, navigate city services
+            from finding an apartment to figuring out trash collection day.
+            Everything Offenbach, in one place.
+          </p>
+        </FadeIn>
 
-        <ButtonCta href="/offenbach" variant="ghost" className="mt-10">
-          discover Offenbach
-        </ButtonCta>
+        <FadeIn delay={300}>
+          <ButtonCta href="/offenbach" variant="ghost" className="mt-10">
+            discover Offenbach
+          </ButtonCta>
+        </FadeIn>
       </div>
     </section>
   );
