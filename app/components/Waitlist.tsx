@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import ButtonCta from "./ui/ButtonCta";
+import { ArrowCircleRightIcon } from "@phosphor-icons/react";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 
 const avatars = [
@@ -50,9 +50,59 @@ const colors = [
   "bg-pacific",
 ];
 
+const STATUS_MESSAGES: Record<string, string> = {
+  confirmationSent: "Thank you! Check your inbox to confirm.",
+  confirmationAlreadySent:
+    "A confirmation email was already sent — check your inbox.",
+  alreadySubscribed: "You're already subscribed!",
+  subscribed: "You're in!",
+};
+
+async function subscribeToNewsletter(email: string) {
+  const url = process.env.NEXT_PUBLIC_NEWSLETTER_URL;
+  if (!url) throw new Error("Newsletter URL not configured");
+
+  const res = await fetch(`${url}subscribe`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ email }),
+  });
+
+  const html = await res.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const title = doc.querySelector("title")?.textContent ?? "";
+
+  const match = Object.entries(STATUS_MESSAGES).find(
+    ([, msg]) => msg === title
+  );
+  return match?.[0] ?? "confirmationSent";
+}
+
 export default function Waitlist() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+    setStatus(null);
+
+    try {
+      const code = await subscribeToNewsletter(email);
+      setStatus(code);
+      setEmail("");
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -80,8 +130,12 @@ export default function Waitlist() {
       {avatars.map((avatar, i) => (
         <div
           key={i}
-          className={`absolute rounded-full ${colors[i]} transition-all duration-700 ease-out ${
-            isVisible ? "opacity-40 lg:opacity-90 scale-100" : "opacity-0 scale-0"
+          className={`absolute rounded-full ${
+            colors[i]
+          } transition-all duration-700 ease-out ${
+            isVisible
+              ? "opacity-40 lg:opacity-90 scale-100"
+              : "opacity-0 scale-0"
           }`}
           style={{
             top: avatar.top,
@@ -91,7 +145,9 @@ export default function Waitlist() {
             height: avatar.size,
             transitionDelay: isVisible ? `${i * 120}ms` : "0ms",
             animation: isVisible
-              ? `${i % 2 === 0 ? "float" : "float-slow"} ${6 + i}s ease-in-out infinite`
+              ? `${i % 2 === 0 ? "float" : "float-slow"} ${
+                  6 + i
+                }s ease-in-out infinite`
               : "none",
             animationDelay: `${avatar.delay}s`,
           }}
@@ -137,26 +193,60 @@ export default function Waitlist() {
         />
       </svg>
 
-      <div className={`relative mx-auto max-w-2xl text-center transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      <div
+        className={`relative mx-auto max-w-2xl text-center transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
         style={{ transitionDelay: isVisible ? "300ms" : "0ms" }}
       >
         <SectionIntroLabel>Come on in</SectionIntroLabel>
 
         <h2 className="mt-6">
-          Join the first <span className="italic text-tangerine">1,000</span>
+          Stay in the <span className="italic text-tangerine">loop</span>
         </h2>
 
         <p className="section-copy mx-auto mt-6 max-w-lg">
-          The algorithms shaping your reality shouldn&apos;t be controlled by
-          shareholders in Silicon Valley. At eny.social, you own your feed, your
-          data, and your voice.
+          We&apos;re not ready yet, but we&apos;re getting close. Drop your
+          email and we&apos;ll let you know when eny.social launches.
         </p>
 
-        <ButtonCta href="#" variant="ghost" className="mt-10">
-          join the waitlist
-        </ButtonCta>
+        {status ? (
+          <p className="section-copy mt-10">
+            {STATUS_MESSAGES[status] ?? "Thanks for signing up!"}
+          </p>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className={`mx-auto mt-10 flex max-w-md items-center gap-0 rounded-full border-2 border-charcoal bg-transparent pl-5 pr-1 py-1 transition-opacity ${
+              loading ? "pointer-events-none opacity-50" : ""
+            }`}
+          >
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="flex-1 bg-transparent font-['Instrument_Sans'] text-[18px] font-medium tracking-[-0.6px] text-charcoal placeholder:text-charcoal/40 focus:outline-none"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="group inline-flex items-center gap-2 rounded-full bg-charcoal py-0 pl-[14px] pr-[3px] font-['Instrument_Sans'] text-[18px] font-medium leading-[200%] tracking-[-0.6px] text-linen transition-all hover:bg-transparent hover:text-charcoal"
+            >
+              join
+              <ArrowCircleRightIcon
+                className="h-8 w-8 transition-transform group-hover:translate-x-0.5"
+                weight="regular"
+              />
+            </button>
+          </form>
+        )}
+        {error && (
+          <p className="section-copy mt-4 text-cotton-candy">
+            Something went wrong, please try again later :(
+          </p>
+        )}
       </div>
     </section>
   );
