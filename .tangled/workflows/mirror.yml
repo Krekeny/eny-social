@@ -13,4 +13,4 @@ steps:
   - name: "Mirror to a different CI Repository"
     command: |
       git remote add gitlab https://oauth2:$ACCESS_TOKEN@$GIT_REPOSITORY
-      git push gitlab main:mirror/main --force
+      git push gitlab HEAD:mirror/main --force
