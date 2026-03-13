@@ -1,3 +1,5 @@
+import FadeIn from "./ui/FadeIn";
+
 export default function ValueCards() {
   const cards = [
     {
@@ -95,8 +97,8 @@ export default function ValueCards() {
       <div className="relative">
         <div className="hide-scrollbar flex gap-6 overflow-x-auto pb-4 -ml-[140px] -mr-[140px] lg:-ml-[80px] lg:-mr-[80px] pl-0 pr-0 lg:justify-center items-center">
           {cards.map((card, i) => (
+            <FadeIn key={i} delay={i * 120}>
             <div
-              key={i}
               className={`relative shrink-0 overflow-hidden ${
                 card.shape === "star"
                   ? "min-w-[320px] max-w-[320px] aspect-square flex items-center justify-center p-8"
@@ -144,6 +146,7 @@ export default function ValueCards() {
                 </div>
               )}
             </div>
+            </FadeIn>
           ))}
         </div>
       </div>
