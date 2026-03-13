@@ -50,7 +50,7 @@ export default function WeBelieve() {
 
               <div className="relative flex items-center justify-center gap-4">
                 {/* Circular photo */}
-                <div className="h-48 w-48 overflow-hidden rounded-full md:h-56 md:w-56">
+                <div className="h-[25vw] w-[25vw] max-h-56 max-w-56 overflow-hidden rounded-full">
                   <img
                     src="/images/pexels-davner-ribeiro-2711547-4574405.jpg"
                     alt="Community"
@@ -58,7 +58,7 @@ export default function WeBelieve() {
                   />
                 </div>
                 {/* Rounded rectangle photo */}
-                <div className="h-56 w-40 overflow-hidden rounded-3xl md:h-64 md:w-44">
+                <div className="h-[30vw] w-[22vw] max-h-64 max-w-44 overflow-hidden rounded-3xl">
                   <img
                     src="/images/pexels-guilhermealmeida-1858175.png"
                     alt="Connection"

@@ -66,7 +66,7 @@ export default function RememberWhen() {
           ].map((item, i) => (
             <FadeIn key={i} delay={200 + i * 150}>
               <div
-                className="relative w-[197px] h-[225px] md:w-[263px] md:h-[300px] overflow-hidden"
+                className="relative w-[28vw] h-[32vw] max-w-[263px] max-h-[300px] overflow-hidden"
                 style={{ clipPath: `url(#${item.mask})` }}
               >
                 <img
