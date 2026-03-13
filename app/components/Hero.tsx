@@ -80,7 +80,7 @@ export default function Hero() {
                 items={[
                   { label: "What", href: "#what" },
                   { label: "Values", href: "#values" },
-                  { label: "offenbach.social", href: "/offenbach" },
+                  { label: "Offenbach", href: "/offenbach" },
                   { label: "Waitlist", href: "#waitlist" },
                 ]}
                 className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end"
