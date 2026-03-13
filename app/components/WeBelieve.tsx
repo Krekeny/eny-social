@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 import FadeIn from "./ui/FadeIn";
 
@@ -51,17 +52,21 @@ export default function WeBelieve() {
               <div className="relative flex items-center justify-center gap-4">
                 {/* Circular photo */}
                 <div className="h-[25vw] w-[25vw] max-h-56 max-w-56 overflow-hidden rounded-full">
-                  <img
+                  <Image
                     src="/images/pexels-davner-ribeiro-2711547-4574405.jpg"
                     alt="Community"
+                    width={448}
+                    height={448}
                     className="h-full w-full object-cover"
                   />
                 </div>
                 {/* Rounded rectangle photo */}
                 <div className="h-[30vw] w-[22vw] max-h-64 max-w-44 overflow-hidden rounded-3xl">
-                  <img
+                  <Image
                     src="/images/pexels-guilhermealmeida-1858175.png"
                     alt="Connection"
+                    width={352}
+                    height={512}
                     className="h-full w-full object-cover"
                   />
                 </div>

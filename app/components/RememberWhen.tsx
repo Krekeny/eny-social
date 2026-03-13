@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 import FadeIn from "./ui/FadeIn";
 
@@ -69,9 +70,11 @@ export default function RememberWhen() {
                 className="relative w-[28vw] h-[32vw] max-w-[263px] max-h-[300px] overflow-hidden"
                 style={{ clipPath: `url(#${item.mask})` }}
               >
-                <img
+                <Image
                   src={item.src}
                   alt=""
+                  width={526}
+                  height={600}
                   className="h-full w-full object-cover"
                   style={{ objectPosition: item.position }}
                 />

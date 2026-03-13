@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import GrainedBlob from "./GrainedBlob";
 import FadeIn from "./ui/FadeIn";
 import NavMenu from "./ui/NavMenu";
@@ -139,10 +140,13 @@ export default function Hero() {
               style={{ clipPath: "url(#hero-blob)" }}
             >
               {slides.map((slide, index) => (
-                <img
+                <Image
                   key={slide.word}
                   src={slide.image}
                   alt={`People ${slide.word}`}
+                  width={1200}
+                  height={1200}
+                  priority={index === 0}
                   className="absolute inset-[-12%] h-[124%] w-[124%] object-cover"
                   style={{
                     transition:
