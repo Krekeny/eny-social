@@ -8,10 +8,12 @@ import Waitlist from "./components/Waitlist";
 import FooterQuote from "./components/FooterQuote";
 import Footer from "./components/Footer";
 import GrainedBlob from "./components/GrainedBlob";
+import GrainFilter from "./components/ui/GrainFilter";
 
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
+      <GrainFilter />
       <Nav />
       <main className="relative z-10">
         <Hero />
