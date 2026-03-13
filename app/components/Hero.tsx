@@ -99,7 +99,7 @@ export default function Hero() {
                 <FadeIn delay={600}>
                   <p className="section-copy lg:pl-[calc(100%/4)] text-right">
                     <strong>
-                      <strike>No algorithms</strike>
+                      <s>No algorithms</s>
                     </strong>{" "}
                     shaping your reality.
                     <br />
