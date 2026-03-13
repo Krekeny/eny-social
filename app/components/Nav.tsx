@@ -23,7 +23,7 @@ export default function Nav() {
           <span className="h-2.5 w-2.5 rounded-full bg-tangerine" />
           <span className="text-xl font-medium text-charcoal">eny.social</span>
         </div>
-        <ButtonCta href="#waitlist">join the waitlist</ButtonCta>
+        <ButtonCta href="/#waitlist">join the waitlist</ButtonCta>
       </div>
     </nav>
   );
