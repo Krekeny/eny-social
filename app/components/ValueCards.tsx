@@ -93,7 +93,7 @@ export default function ValueCards() {
       </svg>
 
       <div className="relative">
-        <div className="hide-scrollbar flex gap-6 overflow-x-auto pb-4 -ml-[130px] -mr-[130px] pl-0 pr-0 lg:justify-center items-center">
+        <div className="hide-scrollbar flex gap-6 overflow-x-auto pb-4 -ml-[140px] -mr-[140px] lg:-ml-[80px] lg:-mr-[80px] pl-0 pr-0 lg:justify-center items-center">
           {cards.map((card, i) => (
             <div
               key={i}
@@ -103,9 +103,9 @@ export default function ValueCards() {
                   : card.shape === "pill-left"
                   ? "min-w-[280px] max-w-[320px] rounded-tl-[50%] rounded-bl-[50%] rounded-tr-3xl rounded-br-3xl pl-24 pr-4 py-8"
                   : card.shape === "pill-right"
-                  ? "min-w-[280px] max-w-[320px] h-[260px] rounded-tr-[50%] rounded-br-[50%] rounded-tl-3xl rounded-bl-3xl p-8"
+                  ? "min-w-[180px] max-w-[200px] h-[180px] rounded-tr-[50%] rounded-br-[50%] rounded-tl-3xl rounded-bl-3xl p-8"
                   : card.shape === "circle"
-                  ? "w-[260px] h-[260px] rounded-full"
+                  ? "w-[180px] h-[180px] rounded-full"
                   : "min-w-[280px] max-w-[320px] rounded-3xl p-8"
               }`}
               style={{
