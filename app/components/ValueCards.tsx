@@ -37,7 +37,7 @@ export default function ValueCards() {
   return (
     <section id="values" className="relative py-24">
       <div className="relative">
-        <div className="hide-scrollbar flex gap-6 overflow-x-auto pb-4 -ml-[140px] -mr-[140px] lg:-ml-[80px] lg:-mr-[80px] pl-0 pr-0 lg:justify-center items-center">
+        <div className="hide-scrollbar flex touch-pan-x gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-4 -ml-[140px] -mr-[140px] lg:-ml-[80px] lg:-mr-[80px] pl-0 pr-0 lg:justify-center items-center">
           {cards.map((card, i) => (
             <FadeIn key={i} delay={i * 120}>
             <div
