@@ -105,7 +105,8 @@ body {
   }
 }
 
-@media (min-width: 640px) {
+/* Medium hero headings: 640px–1400px (large size only from 1401px up) */
+@media (min-width: 640px) and (max-width: 1400px) {
   .stage-heading-1 {
     font-size: 100px;
   }
@@ -114,7 +115,7 @@ body {
   }
 }
 
-/* Responsive scaling for stage headings */
+/* Large hero headings */
 @media (min-width: 1401px) {
   .stage-heading-1 {
     font-size: 130px;
