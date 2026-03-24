@@ -115,7 +115,7 @@ body {
 }
 
 /* Responsive scaling for stage headings */
-@media (min-width: 1024px) {
+@media (min-width: 1401px) {
   .stage-heading-1 {
     font-size: 130px;
   }
@@ -255,7 +255,6 @@ h2 {
     transform: scale(1) translate(4%, 3%);
   }
 }
-
 
 /* Horizontal scroll for value cards */
 .hide-scrollbar {
