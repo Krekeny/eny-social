@@ -1,10 +1,95 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+import { useEffect, useMemo, useState } from "react";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 import FadeIn from "./ui/FadeIn";
 
+// Active GIF duration per slot (must match `items` order).
+// Adjust these values to control how long each GIF stays active.
+const GIF_INTERVALS_MS = [6250, 6350, 6700] as const;
+
 export default function RememberWhen() {
+  const items = useMemo(
+    () => [
+      {
+        src: "/images/gif/hug.gif",
+        mask: "mask-1",
+        position: "bottom" as const,
+      },
+      {
+        src: "/images/gif/dance.gif",
+        mask: "mask-2",
+        position: "center" as const,
+      },
+      {
+        src: "/images/gif/hands-up.gif",
+        mask: "mask-3",
+        position: "top" as const,
+      },
+    ],
+    [],
+  );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [staticFrameByIndex, setStaticFrameByIndex] = useState<
+    Record<number, string>
+  >({});
+
+  useEffect(() => {
+    const durationMs =
+      GIF_INTERVALS_MS[activeIndex] ?? GIF_INTERVALS_MS[0] ?? 6000;
+
+    const timeoutId = window.setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % items.length);
+    }, durationMs);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [activeIndex, items.length]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const captureFirstFrame = async (src: string, index: number) => {
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+
+      await new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+        img.src = src;
+      });
+
+      if (cancelled) return;
+      if (!img.naturalWidth || !img.naturalHeight) return;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      // Capture immediately after load: in most browsers the first frame is available.
+      ctx.drawImage(img, 0, 0);
+
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        if (cancelled) return;
+        setStaticFrameByIndex((prev) => ({ ...prev, [index]: dataUrl }));
+      } catch {
+        // Canvas is tainted (CORS) or similar. Just don't set a static frame.
+      }
+    };
+
+    items.forEach((it, i) => {
+      void captureFirstFrame(it.src, i);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [items]);
+
   return (
     <section className="relative px-6 py-24">
       {/* SVG clip path definitions — all shapes are 350x400 */}
@@ -48,36 +133,38 @@ export default function RememberWhen() {
 
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
-          {[
-            {
-              src: "/images/pexels-shvets-production-7194971.jpg",
-              mask: "mask-1",
-              position: "bottom" as const,
-            },
-            {
-              src: "/images/pexels-didsss-7664407.jpg",
-              mask: "mask-2",
-              position: "center" as const,
-            },
-            {
-              src: "/images/pexels-shvets-production-7533377 1.png",
-              mask: "mask-3",
-              position: "top" as const,
-            },
-          ].map((item, i) => (
+          {items.map((item, i) => (
             <FadeIn key={i} delay={200 + i * 150}>
               <div
                 className="relative w-[28vw] h-[32vw] max-w-[263px] max-h-[300px] overflow-hidden"
                 style={{ clipPath: `url(#${item.mask})` }}
               >
-                <Image
-                  src={item.src}
-                  alt=""
-                  width={526}
-                  height={600}
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: item.position }}
-                />
+                {activeIndex === i ? (
+                  <img
+                    src={item.src}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: item.position }}
+                    draggable={false}
+                  />
+                ) : staticFrameByIndex[i] ? (
+                  <img
+                    src={staticFrameByIndex[i]}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: item.position }}
+                    draggable={false}
+                  />
+                ) : (
+                  // Hide the GIF while the static first-frame snapshot loads.
+                  <img
+                    src={item.src}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: item.position, opacity: 0 }}
+                    draggable={false}
+                  />
+                )}
               </div>
             </FadeIn>
           ))}
