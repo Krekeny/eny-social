@@ -7,23 +7,27 @@ import FadeIn from "./ui/FadeIn";
 
 // Active GIF duration per slot (must match `items` order).
 // Adjust these values to control how long each GIF stays active.
-const GIF_INTERVALS_MS = [6250, 6350, 6700] as const;
+const GIF_INTERVALS_MS = [3000, 3000, 3000] as const;
+const FADE_MS = 600;
 
 export default function RememberWhen() {
   const items = useMemo(
     () => [
       {
-        src: "/images/gif/hug.gif",
+        staticSrc: "/images/webp/money-lovers.webp",
+        animatedSrc: "/images/webp/money-lovers.webp",
         mask: "mask-1",
         position: "bottom" as const,
       },
       {
-        src: "/images/gif/dance.gif",
+        staticSrc: "/images/webp/dancer.webp",
+        animatedSrc: "/images/webp/dancer.webp",
         mask: "mask-2",
         position: "center" as const,
       },
       {
-        src: "/images/gif/hands-up.gif",
+        staticSrc: "/images/webp/cute-dog.webp",
+        animatedSrc: "/images/webp/cute-dog.webp",
         mask: "mask-3",
         position: "top" as const,
       },
@@ -32,6 +36,7 @@ export default function RememberWhen() {
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [overlayOpacity, setOverlayOpacity] = useState(1);
   const [staticFrameByIndex, setStaticFrameByIndex] = useState<
     Record<number, string>
   >({});
@@ -40,11 +45,23 @@ export default function RememberWhen() {
     const durationMs =
       GIF_INTERVALS_MS[activeIndex] ?? GIF_INTERVALS_MS[0] ?? 6000;
 
-    const timeoutId = window.setTimeout(() => {
+    // Fade in at start, fade out near the end for smooth transitions.
+    // Use timeouts so state updates happen asynchronously (avoids cascading render warning).
+    const fadeInStartId = window.setTimeout(() => setOverlayOpacity(0), 0);
+    const fadeInId = window.setTimeout(() => setOverlayOpacity(1), 30);
+    const fadeOutAt = Math.max(0, durationMs - FADE_MS);
+    const fadeOutId = window.setTimeout(() => setOverlayOpacity(0), fadeOutAt);
+
+    const nextId = window.setTimeout(() => {
       setActiveIndex((prev) => (prev + 1) % items.length);
     }, durationMs);
 
-    return () => window.clearTimeout(timeoutId);
+    return () => {
+      window.clearTimeout(fadeInStartId);
+      window.clearTimeout(fadeInId);
+      window.clearTimeout(fadeOutId);
+      window.clearTimeout(nextId);
+    };
   }, [activeIndex, items.length]);
 
   useEffect(() => {
@@ -69,7 +86,6 @@ export default function RememberWhen() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // Capture immediately after load: in most browsers the first frame is available.
       ctx.drawImage(img, 0, 0);
 
       try {
@@ -77,12 +93,12 @@ export default function RememberWhen() {
         if (cancelled) return;
         setStaticFrameByIndex((prev) => ({ ...prev, [index]: dataUrl }));
       } catch {
-        // Canvas is tainted (CORS) or similar. Just don't set a static frame.
+        // Canvas is tainted (CORS) or similar. Keep using item.staticSrc.
       }
     };
 
-    items.forEach((it, i) => {
-      void captureFirstFrame(it.src, i);
+    items.forEach((item, i) => {
+      void captureFirstFrame(item.animatedSrc, i);
     });
 
     return () => {
@@ -139,29 +155,27 @@ export default function RememberWhen() {
                 className="relative w-[28vw] h-[32vw] max-w-[263px] max-h-[300px] overflow-hidden"
                 style={{ clipPath: `url(#${item.mask})` }}
               >
-                {activeIndex === i ? (
+                {/* Static base (always visible) */}
+                <img
+                  src={staticFrameByIndex[i] ?? item.staticSrc}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{ objectPosition: item.position }}
+                  draggable={false}
+                />
+
+                {/* Animated overlay (only one animates at a time) */}
+                {activeIndex === i && (
                   <img
-                    src={item.src}
+                    src={item.animatedSrc}
                     alt=""
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: item.position }}
-                    draggable={false}
-                  />
-                ) : staticFrameByIndex[i] ? (
-                  <img
-                    src={staticFrameByIndex[i]}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: item.position }}
-                    draggable={false}
-                  />
-                ) : (
-                  // Hide the GIF while the static first-frame snapshot loads.
-                  <img
-                    src={item.src}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: item.position, opacity: 0 }}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    style={{
+                      objectPosition: item.position,
+                      opacity: overlayOpacity,
+                      transition: `opacity ${FADE_MS}ms ease-in-out`,
+                      willChange: "opacity",
+                    }}
                     draggable={false}
                   />
                 )}
