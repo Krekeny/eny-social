@@ -1,10 +1,127 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+import { useEffect, useMemo, useState } from "react";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 import FadeIn from "./ui/FadeIn";
 
+// Active GIF duration per slot (must match `items` order).
+// Adjust these values to control how long each GIF stays active.
+const GIF_INTERVALS_MS = [4000, 4000, 4000] as const;
+const FADE_IN_MS = 1000;
+const FADE_OUT_MS = 1000;
+const OVERLAP_MS = 100;
+const FADE_EASING = "linear";
+
 export default function RememberWhen() {
+  const items = useMemo(
+    () => [
+      {
+        staticSrc: "/images/webp/money-lovers.webp",
+        animatedSrc: "/images/webp/money-lovers.webp",
+        mask: "mask-1",
+        position: "bottom" as const,
+      },
+      {
+        staticSrc: "/images/webp/dancer.webp",
+        animatedSrc: "/images/webp/dancer.webp",
+        mask: "mask-2",
+        position: "center" as const,
+      },
+      {
+        staticSrc: "/images/webp/cute-dog.webp",
+        animatedSrc: "/images/webp/cute-dog.webp",
+        mask: "mask-3",
+        position: "top" as const,
+      },
+    ],
+    [],
+  );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [overlayOpacity, setOverlayOpacity] = useState(1);
+  const [fadeMs, setFadeMs] = useState(FADE_IN_MS);
+  const [staticFrameByIndex, setStaticFrameByIndex] = useState<
+    Record<number, string>
+  >({});
+
+  useEffect(() => {
+    const durationMs =
+      GIF_INTERVALS_MS[activeIndex] ?? GIF_INTERVALS_MS[0] ?? 6000;
+
+    // Fade in, fade out
+    const fadeInStartId = window.setTimeout(() => {
+      setFadeMs(FADE_IN_MS);
+      setOverlayOpacity(0);
+    }, 0);
+    const fadeInId = window.setTimeout(() => {
+      setFadeMs(FADE_IN_MS);
+      setOverlayOpacity(1);
+    }, 30);
+
+    const fadeOutAt = Math.max(0, durationMs - FADE_OUT_MS);
+    const fadeOutId = window.setTimeout(() => {
+      setFadeMs(FADE_OUT_MS);
+      setOverlayOpacity(0);
+    }, fadeOutAt);
+
+    const nextId = window.setTimeout(
+      () => {
+        setActiveIndex((prev) => (prev + 1) % items.length);
+      },
+      Math.max(0, durationMs - OVERLAP_MS),
+    );
+
+    return () => {
+      window.clearTimeout(fadeInStartId);
+      window.clearTimeout(fadeInId);
+      window.clearTimeout(fadeOutId);
+      window.clearTimeout(nextId);
+    };
+  }, [activeIndex, items.length]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const captureFirstFrame = async (src: string, index: number) => {
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+
+      await new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+        img.src = src;
+      });
+
+      if (cancelled) return;
+      if (!img.naturalWidth || !img.naturalHeight) return;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.drawImage(img, 0, 0);
+
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        if (cancelled) return;
+        setStaticFrameByIndex((prev) => ({ ...prev, [index]: dataUrl }));
+      } catch {
+        // Canvas is tainted (CORS) or similar. Keep using item.staticSrc.
+      }
+    };
+
+    items.forEach((item, i) => {
+      void captureFirstFrame(item.animatedSrc, i);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [items]);
+
   return (
     <section className="relative px-6 py-24">
       {/* SVG clip path definitions — all shapes are 350x400 */}
@@ -48,36 +165,42 @@ export default function RememberWhen() {
 
         {/* Three masked photos */}
         <div className="mt-12 flex items-center justify-center gap-6 md:gap-10">
-          {[
-            {
-              src: "/images/pexels-shvets-production-7194971.jpg",
-              mask: "mask-1",
-              position: "bottom" as const,
-            },
-            {
-              src: "/images/pexels-didsss-7664407.jpg",
-              mask: "mask-2",
-              position: "center" as const,
-            },
-            {
-              src: "/images/pexels-shvets-production-7533377 1.png",
-              mask: "mask-3",
-              position: "top" as const,
-            },
-          ].map((item, i) => (
+          {items.map((item, i) => (
             <FadeIn key={i} delay={200 + i * 150}>
               <div
                 className="relative w-[28vw] h-[32vw] max-w-[263px] max-h-[300px] overflow-hidden"
                 style={{ clipPath: `url(#${item.mask})` }}
               >
-                <Image
-                  src={item.src}
+                {/* Static base (always visible) */}
+                <img
+                  src={staticFrameByIndex[i] ?? item.staticSrc}
                   alt=""
-                  width={526}
-                  height={600}
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: item.position }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{
+                    objectPosition: item.position,
+                    // Crossfade: as the animated overlay fades out, fade the static base in.
+                    opacity: activeIndex === i ? 1 - overlayOpacity : 1,
+                    transition: `opacity ${fadeMs}ms ${FADE_EASING}`,
+                    willChange: "opacity",
+                  }}
+                  draggable={false}
                 />
+
+                {/* Animated overlay (only one animates at a time) */}
+                {activeIndex === i && (
+                  <img
+                    src={item.animatedSrc}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    style={{
+                      objectPosition: item.position,
+                      opacity: overlayOpacity,
+                      transition: `opacity ${fadeMs}ms ${FADE_EASING}`,
+                      willChange: "opacity",
+                    }}
+                    draggable={false}
+                  />
+                )}
               </div>
             </FadeIn>
           ))}
