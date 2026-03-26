@@ -7,8 +7,11 @@ import FadeIn from "./ui/FadeIn";
 
 // Active GIF duration per slot (must match `items` order).
 // Adjust these values to control how long each GIF stays active.
-const GIF_INTERVALS_MS = [3000, 3000, 3000] as const;
-const FADE_MS = 600;
+const GIF_INTERVALS_MS = [4000, 4000, 4000] as const;
+const FADE_IN_MS = 1000;
+const FADE_OUT_MS = 1000;
+const OVERLAP_MS = 100;
+const FADE_EASING = "linear";
 
 export default function RememberWhen() {
   const items = useMemo(
@@ -37,6 +40,7 @@ export default function RememberWhen() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [overlayOpacity, setOverlayOpacity] = useState(1);
+  const [fadeMs, setFadeMs] = useState(FADE_IN_MS);
   const [staticFrameByIndex, setStaticFrameByIndex] = useState<
     Record<number, string>
   >({});
@@ -45,16 +49,28 @@ export default function RememberWhen() {
     const durationMs =
       GIF_INTERVALS_MS[activeIndex] ?? GIF_INTERVALS_MS[0] ?? 6000;
 
-    // Fade in at start, fade out near the end for smooth transitions.
-    // Use timeouts so state updates happen asynchronously (avoids cascading render warning).
-    const fadeInStartId = window.setTimeout(() => setOverlayOpacity(0), 0);
-    const fadeInId = window.setTimeout(() => setOverlayOpacity(1), 30);
-    const fadeOutAt = Math.max(0, durationMs - FADE_MS);
-    const fadeOutId = window.setTimeout(() => setOverlayOpacity(0), fadeOutAt);
+    // Fade in, fade out
+    const fadeInStartId = window.setTimeout(() => {
+      setFadeMs(FADE_IN_MS);
+      setOverlayOpacity(0);
+    }, 0);
+    const fadeInId = window.setTimeout(() => {
+      setFadeMs(FADE_IN_MS);
+      setOverlayOpacity(1);
+    }, 30);
 
-    const nextId = window.setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % items.length);
-    }, durationMs);
+    const fadeOutAt = Math.max(0, durationMs - FADE_OUT_MS);
+    const fadeOutId = window.setTimeout(() => {
+      setFadeMs(FADE_OUT_MS);
+      setOverlayOpacity(0);
+    }, fadeOutAt);
+
+    const nextId = window.setTimeout(
+      () => {
+        setActiveIndex((prev) => (prev + 1) % items.length);
+      },
+      Math.max(0, durationMs - OVERLAP_MS),
+    );
 
     return () => {
       window.clearTimeout(fadeInStartId);
@@ -160,7 +176,13 @@ export default function RememberWhen() {
                   src={staticFrameByIndex[i] ?? item.staticSrc}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
-                  style={{ objectPosition: item.position }}
+                  style={{
+                    objectPosition: item.position,
+                    // Crossfade: as the animated overlay fades out, fade the static base in.
+                    opacity: activeIndex === i ? 1 - overlayOpacity : 1,
+                    transition: `opacity ${fadeMs}ms ${FADE_EASING}`,
+                    willChange: "opacity",
+                  }}
                   draggable={false}
                 />
 
@@ -173,7 +195,7 @@ export default function RememberWhen() {
                     style={{
                       objectPosition: item.position,
                       opacity: overlayOpacity,
-                      transition: `opacity ${FADE_MS}ms ease-in-out`,
+                      transition: `opacity ${fadeMs}ms ${FADE_EASING}`,
                       willChange: "opacity",
                     }}
                     draggable={false}
