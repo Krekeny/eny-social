@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteDescription, siteName, siteTitle } from "@/lib/site";
 import { Instrument_Serif, Instrument_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -17,10 +18,41 @@ const instrumentSans = Instrument_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
+/** Canonical site for metadata (OG, etc.). Override via NEXT_PUBLIC_SITE_URL if needed. */
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL
+    ? process.env.VERCEL_ENV === "production"
+      ? "https://eny.social"
+      : `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");
+
+const ogImage = "/opengraph.png";
+
 export const metadata: Metadata = {
-  title: "eny.social — A social network that belongs to the people",
-  description:
-    "No algorithms shaping your reality. Decentralized. Built and hosted in Europe. Starting in Offenbach.",
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteTitle,
+    description: siteDescription,
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [{ url: ogImage, alt: siteTitle }],
+  },
 };
 
 export default function RootLayout({
