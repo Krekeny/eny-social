@@ -1,5 +1,6 @@
 "use client";
 
+import { siteTagline } from "@/lib/site";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import GrainedBlob from "./GrainedBlob";
@@ -157,9 +158,7 @@ export default function Hero() {
               {/* Sub-heading + body */}
               <div className="lg:col-span-5 lg:pl-[calc(100%/5)]">
                 <FadeIn delay={500}>
-                  <h2 className="mb-3">
-                    A social network that belongs to the people.
-                  </h2>
+                  <h2 className="mb-3">{siteTagline}.</h2>
                 </FadeIn>
                 <FadeIn delay={600}>
                   <p className="section-copy lg:pl-[calc(100%/4)] text-right">
