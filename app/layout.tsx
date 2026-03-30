@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteDescription, siteTitle } from "@/lib/site";
+import { siteDescription, siteName, siteTitle } from "@/lib/site";
 import { Instrument_Serif, Instrument_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -27,10 +27,32 @@ const siteUrl =
       : `https://${process.env.VERCEL_URL}`
     : "http://localhost:3000");
 
+const ogImage = "/opengraph.png";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: siteTitle,
   description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteTitle,
+    description: siteDescription,
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [{ url: ogImage, alt: siteTitle }],
+  },
 };
 
 export default function RootLayout({
