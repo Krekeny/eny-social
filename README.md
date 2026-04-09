@@ -7,6 +7,7 @@ No algorithms shaping your reality. Decentralized. Built and hosted in Europe. S
 eny.social is a social platform where you own your feed, your data, and your voice. Built as an alternative to algorithm-driven social media, it connects people, media, communities, and services — without selling your data or letting Silicon Valley shareholders decide what you see.
 
 **Core values:**
+
 - Everything in one place — people, media, and services
 - Secure by design — we don't sell your data
 - Made in Europe — built, hosted, and governed in Europe
@@ -27,3 +28,7 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+> "Social media should be public infrastructure. Like roads, libraries or public spaces. Open, transparent and built for the people who use it."
