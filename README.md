@@ -1,4 +1,4 @@
-# eny.social — A social network that belongs to the people
+# Landingpage for eny.social — A social network that belongs to the people
 
 No algorithms shaping your reality. Decentralized. Built and hosted in Europe. Starting in Offenbach.
 
