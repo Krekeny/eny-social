@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "EnyBot — eny.social",
   description:
     "Learn about EnyBot, the web crawler used by eny.social to discover and index content across the decentralized web.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function BotPage() {
