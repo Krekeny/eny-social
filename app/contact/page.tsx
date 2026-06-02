@@ -18,10 +18,10 @@ export default function ContactPage() {
             <h2 className="headline-label mt-10">Email</h2>
             <p>
               <a
-                href="mailto:hello@krekeny.com"
+                href="mailto:hello+eny@krekeny.com"
                 className="text-pacific underline"
               >
-                hello@krekeny.com
+                hello+eny@krekeny.com
               </a>
             </p>
 

@@ -32,10 +32,10 @@ export default function ImprintPage() {
               <br />
               Email:{" "}
               <a
-                href="mailto:hello@krekeny.com"
+                href="mailto:hello+eny@krekeny.com"
                 className="text-pacific underline"
               >
-                hello@krekeny.com
+                hello+eny@krekeny.com
               </a>
             </p>
 
