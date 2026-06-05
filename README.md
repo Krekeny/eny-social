@@ -4,13 +4,13 @@ No algorithms shaping your reality. Decentralized. Built and hosted in Europe. S
 
 ## What is eny.social?
 
-eny.social is a social platform where you own your feed, your data, and your voice. Built as an alternative to algorithm-driven social media, it connects people, media, communities, and services — without selling your data or letting Silicon Valley shareholders decide what you see.
+eny.social is a social platform where you own your feed, your data, and your voice. Built as an alternative to algorithm-driven social media, it connects people, media, communities, and services, without selling your data or letting Silicon Valley shareholders decide what you see.
 
 **Core values:**
 
-- Everything in one place — people, media, and services
-- Secure by design — we don't sell your data
-- Made in Europe — built, hosted, and governed in Europe
+- Everything in one place: people, media, and services
+- Secure by design: we don't sell your data
+- Made in Europe: built, hosted, and governed in Europe
 
 The platform launches first in Offenbach am Main, bringing together local neighborhoods, events, and city services in one place.
 
