@@ -27,7 +27,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen px-6 pt-28 pb-20">
       {/* Grained star blob — decorative, bleeds left edge, behind text */}
-      <GrainedBlob className="pointer-events-none absolute -left-[40%] -top-[10%] h-[120vh] w-[120vh]" />
+      <GrainedBlob className="pointer-events-none absolute -left-[40%] -top-[10%] h-[120vh] max-h-[1300px] w-[120vh] max-w-[1400px]" />
 
       <div className="relative mx-auto max-w-xl lg:max-w-[1536px]">
         <div className="grid gap-12 lg:grid-cols-12">
