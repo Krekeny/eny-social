@@ -4,40 +4,43 @@ import { useRef, useState, useEffect } from "react";
 import { ArrowCircleRightIcon } from "@phosphor-icons/react";
 import SectionIntroLabel from "./ui/SectionIntroLabel";
 
-const avatars = [
-  {
-    top: "8%",
-    left: "20%",
-    size: 48,
-    delay: 0,
-    img: "https://stinkhorn.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:vmqt4a4pf5jxvtalzjz2zsqk&cid=bafkreifed32u3tuknqoywdqij24vm4jqn35pvkx3q6spmqqoxiv654wtva",
-  },
-  {
-    top: "15%",
-    right: "20%",
-    size: 40,
-    delay: 1.2,
-    img: "https://calocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xrdmnk5t6y5l2n3zq5pok4ua&cid=bafkreibddkvunzwhhtloccrzia6ugllqq7bow435sjclvhbhhkmwqu2d4a",
-  },
-  {
-    top: "60%",
-    left: "15%",
-    size: 36,
-    delay: 0.8,
-    img: "https://panus.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:35gbbt2mb36gsl62tduilory&cid=bafkreigfixmlz4ynckkwtzuvxmowbozwlokr2aapgm36ne5sse4tzhxf3u",
-  },
-  {
-    top: "70%",
-    right: "18%",
-    size: 44,
-    delay: 2,
-    img: "https://agrocybe.us-west.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:ymdvhm76z46uamksi25rffeh&cid=bafkreifp66m5ihkxuthf4vwo6b5ao3evl52fbezsvfkfucxedox3a7joli",
-  },
+const ENY_DID = "did:plc:xtwtxzpedjpey4xjnvs56muh";
+
+const followerPositions = [
+  { top: "8%", left: "20%", size: 48, delay: 0 },
+  { top: "15%", right: "20%", size: 40, delay: 1.2 },
+  { top: "60%", left: "15%", size: 36, delay: 0.8 },
+  { top: "70%", right: "18%", size: 44, delay: 2 },
+];
+
+const placeholders = [
   { top: "35%", left: "75%", size: 32, delay: 1.5 },
   { top: "80%", left: "28%", size: 38, delay: 0.4 },
   { top: "25%", left: "12%", size: 42, delay: 1.8 },
   { top: "50%", right: "14%", size: 34, delay: 0.6 },
 ];
+
+async function getFollowerAvatars(actor: string) {
+  const avatars: string[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const params = new URLSearchParams({ actor, limit: "100" });
+    if (cursor) params.set("cursor", cursor);
+
+    const res = await fetch(
+      `https://public.api.bsky.app/xrpc/app.bsky.graph.getFollowers?${params}`,
+    );
+    const data = await res.json();
+
+    for (const f of data.followers) {
+      if (f.avatar) avatars.push(f.avatar);
+    }
+    cursor = data.cursor;
+  } while (cursor);
+
+  return avatars;
+}
 
 const colors = [
   "bg-tangerine",
@@ -74,7 +77,7 @@ async function subscribeToNewsletter(email: string) {
   const title = doc.querySelector("title")?.textContent ?? "";
 
   const match = Object.entries(STATUS_MESSAGES).find(
-    ([, msg]) => msg === title
+    ([, msg]) => msg === title,
   );
   return match?.[0] ?? "confirmationSent";
 }
@@ -86,6 +89,12 @@ export default function Waitlist() {
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [followerAvatars, setFollowerAvatars] = useState<string[]>([]);
+
+  const avatars = [
+    ...followerPositions.map((pos, i) => ({ ...pos, img: followerAvatars[i] })),
+    ...placeholders,
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +114,15 @@ export default function Waitlist() {
   };
 
   useEffect(() => {
+    getFollowerAvatars(ENY_DID)
+      .then((all) => {
+        const shuffled = [...all].sort(() => Math.random() - 0.5);
+        setFollowerAvatars(shuffled.slice(0, followerPositions.length));
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -114,7 +132,7 @@ export default function Waitlist() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
     observer.observe(el);
     return () => observer.disconnect();
