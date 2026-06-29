@@ -13,7 +13,7 @@ export default function Footer() {
           items={[
             { label: "imprint", href: "/imprint" },
             { label: "contact", href: "/contact" },
-            { label: "privacy", href: "https://krekeny.com/data-protection" },
+            { label: "privacy", href: "https://krekeny.com/privacy-policy" },
           ]}
           className="flex flex-col items-start gap-0"
           baseDelay={0}
