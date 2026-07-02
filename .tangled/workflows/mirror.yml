@@ -1,7 +1,7 @@
 # .tangled/workflows/mirror.yml
 when:
   - event: ["push"]
-    branch: ["main"]
+    branch: ["main", "develop", "feature/*", "docs/*"]
 
 engine: "nixery"
 
@@ -15,6 +15,14 @@ dependencies:
 steps:
   - name: "Mirror to a different CI Repository"
     command: |
+      set -eu
+      if [ -z "${ACCESS_TOKEN:-}" ]; then
+        echo "ERROR: ACCESS_TOKEN is empty — configure it as a secret in Tangled." >&2
+        exit 1
+      fi
+      echo "repo=$GIT_REPOSITORY  token_len=${#ACCESS_TOKEN}"
       git fetch --unshallow || true
-      git remote add github https://x-access-token:$ACCESS_TOKEN@$GIT_REPOSITORY
-      git push github HEAD:refs/heads/mirror/main --force
+      git remote add github "https://x-access-token:$ACCESS_TOKEN@$GIT_REPOSITORY"
+      REF_NAME="${TANGLED_REF_NAME:-${TANGLED_PR_TARGET_BRANCH:-}}"
+      [ -n "$REF_NAME" ] || { echo "ERROR: no branch ref available" >&2; exit 1; }
+      git push github "HEAD:refs/heads/mirror/$REF_NAME" --force
