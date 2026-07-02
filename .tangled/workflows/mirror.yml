@@ -17,11 +17,11 @@ steps:
     command: |
       set -eu
       : "${ACCESS_TOKEN:?configure ACCESS_TOKEN secret in Tangled}"
-      : "${GITHUB_REPOSITORY:?configure GITHUB_REPOSITORY secret (github.com/OWNER/REPO.git)}"
+      : "${GIT_REPOSITORY:?configure GIT_REPOSITORY secret (github.com/OWNER/REPO.git)}"
 
       git fetch --unshallow || true
       # token as password, any username — robust for PAT and App tokens alike
-      git remote add github "https://x-access-token:${ACCESS_TOKEN}@${GITHUB_REPOSITORY}"
+      git remote add github "https://x-access-token:${ACCESS_TOKEN}@${GIT_REPOSITORY}"
 
       REF_NAME="${TANGLED_REF_NAME:-${TANGLED_PR_TARGET_BRANCH:-main}}"
       git push github "HEAD:refs/heads/mirror/${REF_NAME}" --force
