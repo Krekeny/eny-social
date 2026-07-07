@@ -11,6 +11,7 @@ export default function Footer() {
         {/* Links */}
         <NavMenu
           items={[
+            { label: "blog", href: "/blog" },
             { label: "imprint", href: "/imprint" },
             { label: "contact", href: "/contact" },
             { label: "privacy", href: "https://krekeny.com/privacy-policy" },

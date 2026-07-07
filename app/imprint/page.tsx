@@ -9,7 +9,7 @@ export default function ImprintPage() {
         <div className="mx-auto max-w-3xl">
           <h1 className="mb-12">Imprint</h1>
 
-          <div className="prose space-y-6 text-charcoal/80">
+          <div className="space-y-6 text-charcoal/80">
             <h2 className="headline-label">Information according to § 5 TMG</h2>
             <p>
               Krekeny GmbH
