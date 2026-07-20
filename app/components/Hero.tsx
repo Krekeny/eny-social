@@ -16,6 +16,7 @@ const slides = [
 
 export default function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [simpleHero, setSimpleHero] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -140,36 +141,41 @@ export default function Hero() {
             {/* Menu + sub-text side by side */}
             <div className="mt-12 grid lg:grid-cols-6 gap-4">
               {/* Menu links */}
-              <div className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end lg:translate-x-[10%]">
-                <NavMenu
-                  items={[
-                    { label: "What", href: "#what" },
-                    { label: "Values", href: "#values" },
-                    { label: "Offenbach", href: "/offenbach" },
-                    { label: "Waitlist", href: "#waitlist" },
-                  ]}
-                  className=""
-                  itemClassName="self-end text-right"
-                  baseDelay={400}
-                  stagger={80}
-                />
-              </div>
+              {!simpleHero ? (
+                <div className="hidden lg:col-span-1 lg:flex lg:flex-col lg:items-end lg:translate-x-[10%]">
+                  <NavMenu
+                    items={[
+                      { label: "What", href: "#what" },
+                      { label: "Values", href: "#values" },
+                      { label: "Offenbach", href: "/offenbach" },
+                      { label: "Waitlist", href: "#waitlist" },
+                    ]}
+                    className=""
+                    itemClassName="self-end text-right"
+                    baseDelay={400}
+                    stagger={80}
+                  />
+                </div>
+              ) : null}
 
               {/* Sub-heading + body */}
               <div className="lg:col-span-5 lg:pl-[calc(100%/5)]">
                 <FadeIn delay={500}>
                   <h2 className="mb-3">{siteTagline}.</h2>
                 </FadeIn>
-                <FadeIn delay={600}>
-                  <p className="section-copy lg:pl-[calc(100%/4)] text-right">
-                    <strong>
-                      <s>No algorithms</s>
-                    </strong>{" "}
-                    shaping your reality.
-                    <br />
-                    Decentralized. Built and hosted in <strong>Europe</strong>.
-                  </p>
-                </FadeIn>
+                {!simpleHero && (
+                  <FadeIn delay={600}>
+                    <p className="section-copy lg:pl-[calc(100%/4)] text-right">
+                      <strong>
+                        <s>No algorithms</s>
+                      </strong>{" "}
+                      shaping your reality.
+                      <br />
+                      Decentralized. Built and hosted in <strong>Europe</strong>
+                      .
+                    </p>
+                  </FadeIn>
+                )}
               </div>
             </div>
           </div>

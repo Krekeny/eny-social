@@ -6,14 +6,23 @@ import SectionIntroLabel from "./ui/SectionIntroLabel";
 
 const ENY_DID = "did:plc:xtwtxzpedjpey4xjnvs56muh";
 
-const followerPositions = [
+type FloatingAvatar = {
+  top: string;
+  left?: string;
+  right?: string;
+  size: number;
+  delay: number;
+  img?: string;
+};
+
+const followerPositions: FloatingAvatar[] = [
   { top: "8%", left: "20%", size: 48, delay: 0 },
   { top: "15%", right: "20%", size: 40, delay: 1.2 },
   { top: "60%", left: "15%", size: 36, delay: 0.8 },
   { top: "70%", right: "18%", size: 44, delay: 2 },
 ];
 
-const placeholders = [
+const placeholders: FloatingAvatar[] = [
   { top: "35%", left: "75%", size: 32, delay: 1.5 },
   { top: "80%", left: "28%", size: 38, delay: 0.4 },
   { top: "25%", left: "12%", size: 42, delay: 1.8 },
@@ -91,7 +100,7 @@ export default function Waitlist() {
   const [error, setError] = useState(false);
   const [followerAvatars, setFollowerAvatars] = useState<string[]>([]);
 
-  const avatars = [
+  const avatars: FloatingAvatar[] = [
     ...followerPositions.map((pos, i) => ({ ...pos, img: followerAvatars[i] })),
     ...placeholders,
   ];
