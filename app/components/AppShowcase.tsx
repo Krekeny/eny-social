@@ -2,15 +2,37 @@
 
 import {
   createContext,
+  memo,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
   useSyncExternalStore,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import Image from "next/image";
+import OrbitIntro from "./OrbitIntro";
+import OutroReveal from "./OutroReveal";
+
+// The two reveal animations are heavy trees (dozens of inline-styled nodes with
+// their own CSS keyframes). They're mounted while the parent re-renders every
+// scroll frame, so memoise them — with stable props they skip re-render
+// entirely and just keep animating on the compositor.
+const OrbitIntroMemo = memo(OrbitIntro);
+const OutroRevealMemo = memo(OutroReveal);
+// Stable prop objects so the memo boundaries above actually hold.
+// Intro needs overflow:visible (its widest orbit tile spills past the box);
+// the outro must NOT — its aurora blur layers would then paint unclipped and
+// tank the frame while it's held on screen through the tail.
+const COVER_INNER_STYLE = { overflow: "visible", minHeight: 0 } as const;
+const OUTRO_INNER_STYLE = { minHeight: 0 } as const;
+const COVER_SCALE_STYLE = {
+  width: 360,
+  height: 560,
+  transform: "scale(0.66)",
+} as const;
 import {
   HouseIcon,
   CompassIcon,
@@ -20,6 +42,11 @@ import {
   PaperPlaneTiltIcon,
   BookmarkSimpleIcon,
   PlayIcon,
+  UsersThreeIcon,
+  HandshakeIcon,
+  ArrowsClockwiseIcon,
+  CalendarBlankIcon,
+  NewspaperIcon,
 } from "@phosphor-icons/react";
 
 /**
@@ -43,15 +70,125 @@ import {
  * layer reads as a crossfade and never exposes content underneath.
  */
 const SEGMENT_VH = 100;
-const TAIL_VH = 40; // hold on the last screen before the section unpins
-const FADE_START = 0.25; // fade window inside a segment (rest is hold time)
-const FADE_END = 0.75;
+// Pinned dwell after the choreography completes. This is where the outro
+// reveal plays: it arms as progress reaches the end (still pinned) and holds
+// for this whole tail, so you watch the animation instead of scrolling it away.
+const TAIL_VH = 42;
+// How far before the end (in segments) the outro linen cover begins fading in.
+// Bigger than the fade duration so the cover is fully opaque by the time the
+// pinned tail begins — that's when the reveal animation is allowed to start.
+const OUTRO_LEAD = 0.4;
+
+// Intro-card choreography, expressed as fractions of a card's own scroll
+// segment. Each later section is introduced by a card that rises up from
+// below, briefly covers the phone screen, then fades away to reveal that
+// section's app video underneath.
+// Scroll length (in segments) of one card's rise+fade, and how long to hold
+// on the revealed video before the next card rises. HOLD_LEN is applied
+// uniformly — including once on the first video after the phone locks — so the
+// spacing between videos stays consistent and the dead scroll stays short.
+const CARD_LEN = 1;
+const HOLD_LEN = 0.35;
+
+// How far below its resting spot the card starts, as a % of its own height.
+// >100% keeps it fully below the phone (off-screen) at the start so it slides
+// up into frame instead of popping in at the bottom edge.
+const CARD_START_Y = 125;
+const CARD_RISE_END = 0.6; // card finishes rising / fully covers the screen
+const CARD_SWAP = 0.62; // swap the in-phone video while the card covers it
+
+// The card→video reveal is deliberately NOT scrubbed by scroll. The card rises
+// (scroll-driven) into its covering spot, holds while the user scrolls a short
+// REVEAL_HOLD further, and only then does crossing that threshold arm a
+// self-running, time-based fade (REVEAL_FADE_MS) that dissolves the cover and
+// starts the video underneath — regardless of how the user scrolls after.
+const REVEAL_HOLD = 0.18; // extra scroll past "fully covered" before the fade arms
+const REVEAL_FADE_MS = 650; // duration of the on-its-own fade-out
 
 // Shared sizing for the card/phone footprint — identical in both the
 // animated and reduced-motion layouts so the elements look the same.
 const FOOTPRINT = "relative h-[70vh] max-h-[720px] aspect-[9/19]";
-const CARD_IN_FOOTPRINT =
-  "absolute left-1/2 top-1/2 h-[75%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-[32px]";
+// A card sized to cover the phone's *visible screen*. Nominally the screen sits
+// past the 10px bezel (inner radius 44 − 10 = 34), but FOOTPRINT's width is
+// fractional (height × 9/19), so a card clipped exactly to that edge leaves an
+// intermittent 1px sub-pixel gap where the light screen peeks past the card.
+// Bias the card 1px OUTWARD (inset 9, concentric radius 44 − 9 = 35) so its
+// edge always laps onto the dark bezel instead — no gap, and the 1px overlap is
+// swallowed by the frame.
+const SCREEN_POS = "absolute inset-[9px]";
+const SCREEN_CLIP = { clipPath: "inset(0 round 35px)" } as const;
+
+// Decorative detail cards that flank the phone on large screens only. Each
+// section ("round") gets its own layout so the cards land in different spots
+// as you scroll from one section to the next. A section's `details` fill its
+// layout's slots in order. Positioning uses top/left/right (never transform)
+// so the per-slot float animation and tilt on the inner layers don't fight it.
+const SATELLITE_LAYOUTS = [
+  // Round 1 — one left, two right
+  [
+    {
+      pos: "top-[38%] -left-[252px]",
+      tilt: "-rotate-2",
+      float: "float 9s ease-in-out 0s infinite",
+    },
+    {
+      pos: "top-[11%] -right-[258px]",
+      tilt: "rotate-3",
+      float: "float-slow 11s ease-in-out 0.3s infinite",
+    },
+    {
+      pos: "bottom-[12%] -right-[238px]",
+      tilt: "-rotate-1",
+      float: "float 10s ease-in-out 0.6s infinite",
+    },
+  ],
+  // Round 2 — two left, one right
+  [
+    {
+      pos: "top-[10%] -left-[248px]",
+      tilt: "rotate-2",
+      float: "float-slow 10s ease-in-out 0s infinite",
+    },
+    {
+      pos: "bottom-[15%] -left-[264px]",
+      tilt: "-rotate-3",
+      float: "float 11s ease-in-out 0.4s infinite",
+    },
+    {
+      pos: "top-[40%] -right-[252px]",
+      tilt: "rotate-1",
+      float: "float-slow 9s ease-in-out 0.2s infinite",
+    },
+  ],
+  // Round 3 — two right, one left
+  [
+    {
+      pos: "top-[13%] -right-[256px]",
+      tilt: "-rotate-2",
+      float: "float 10s ease-in-out 0s infinite",
+    },
+    {
+      pos: "bottom-[10%] -right-[240px]",
+      tilt: "rotate-2",
+      float: "float-slow 12s ease-in-out 0.5s infinite",
+    },
+    {
+      pos: "top-[43%] -left-[250px]",
+      tilt: "-rotate-1",
+      float: "float 9s ease-in-out 0.3s infinite",
+    },
+  ],
+] as const;
+
+/**
+ * Scroll offset (in segments) at which section `i`'s intro card begins its
+ * rise. Layout: slide-up (1) → hold → card 1 → hold → card 2 → … Each card is
+ * preceded by a uniform HOLD_LEN on the currently shown video, so the spacing
+ * between videos is consistent. Only meaningful for i >= 1.
+ */
+function cardStart(i: number) {
+  return 1 + i * HOLD_LEN + (i - 1) * CARD_LEN;
+}
 
 /* ------------------------------------------------------------------ */
 /* Translatable copy                                                   */
@@ -132,6 +269,14 @@ const copy = {
   },
 } as const;
 
+/** A small detail card shown beside the phone on large screens. */
+export interface SatelliteDetail {
+  icon: ReactNode;
+  label: string;
+  /** Background color (CSS color value / token) */
+  color: string;
+}
+
 export interface ShowcaseSection {
   /** Icon / illustration shown on the card */
   icon: ReactNode;
@@ -146,6 +291,12 @@ export interface ShowcaseSection {
    * many frames as you like — a single-element array is a static screen.
    */
   frames: ReactNode[];
+  /**
+   * Optional detail cards flanking the phone on large screens — the specifics
+   * the short headline card can't carry. Filled into SATELLITE_SLOTS in order;
+   * hidden below xl and in the reduced-motion layout.
+   */
+  details?: SatelliteDetail[];
 }
 
 function clamp01(value: number) {
@@ -185,7 +336,9 @@ function smoothstep(t: number) {
  */
 const LayerPlaybackContext = createContext(false);
 
-function UseCaseCard({
+// Memoised: `section` and `className` are stable references, so a scroll-frame
+// re-render of the parent card wrapper won't re-render the card's contents.
+const UseCaseCard = memo(function UseCaseCard({
   section,
   className,
 }: {
@@ -205,7 +358,138 @@ function UseCaseCard({
       </p>
     </div>
   );
+});
+
+/**
+ * A use-case card sized and rounded to cover the phone's inner screen
+ * exactly. Used three ways: the first section's card behind the phone, the
+ * later sections' cards that rise up over the phone, and the reduced-motion
+ * layout. Positional/animation styling is passed in via `style`.
+ */
+function PhoneScreenCard({
+  section,
+  style,
+}: {
+  section: ShowcaseSection;
+  style?: CSSProperties;
+}) {
+  return (
+    <div className={SCREEN_POS} style={{ ...SCREEN_CLIP, ...style }}>
+      <UseCaseCard section={section} className="h-full w-full" />
+    </div>
+  );
 }
+
+/**
+ * The stack of app screens inside the phone. Every screen stays mounted; only
+ * the current one is shown and only a revealed one plays. Memoised on discrete
+ * props (indices + a bool) so it doesn't re-render on every scroll frame — only
+ * when the visible screen, the reveal frontier, or the pin state actually flips.
+ * `revealedThrough` is the highest section whose reveal has armed; because the
+ * per-section thresholds increase with index, `i <= revealedThrough` is exactly
+ * the old `progress >= revealThreshold(i)` test.
+ */
+const PhoneScreens = memo(function PhoneScreens({
+  sections,
+  currentSection,
+  revealedThrough,
+  pinned,
+}: {
+  sections: ShowcaseSection[];
+  currentSection: number;
+  revealedThrough: number;
+  pinned: boolean;
+}) {
+  return (
+    <>
+      {sections.map((section, i) => {
+        const show = currentSection === i;
+        const play = show && pinned && i <= revealedThrough;
+        return (
+          <div
+            key={i}
+            className="absolute inset-0 bg-linen"
+            style={{ opacity: show ? 1 : 0 }}
+          >
+            <LayerPlaybackContext.Provider value={play}>
+              {section.frames}
+            </LayerPlaybackContext.Provider>
+          </div>
+        );
+      })}
+    </>
+  );
+});
+
+/**
+ * Detail cards flanking the phone (large screens only). Memoised on the two
+ * discrete inputs that change their state — which section is active and whether
+ * the phone has risen — so their entrance/float transitions aren't recomputed
+ * every scroll frame.
+ */
+const Satellites = memo(function Satellites({
+  sections,
+  activeSection,
+  shown,
+}: {
+  sections: ShowcaseSection[];
+  activeSection: number;
+  shown: boolean;
+}) {
+  return (
+    <div className="pointer-events-none hidden md:block">
+      {sections.map((section, i) => {
+        const layout = SATELLITE_LAYOUTS[i % SATELLITE_LAYOUTS.length];
+        return section.details?.map((detail, k) => {
+          const slot = layout[k];
+          if (!slot) return null;
+          // Keep satellites out during the slide-up, then keep them shown once
+          // the phone has risen — including after unsticking past the section,
+          // so they hold rather than retracting.
+          const visible = shown && activeSection === i;
+          // Enter from inside the phone: start shifted toward the phone centre
+          // (behind it, z-10) and scaled down, then settle out to the slot.
+          // Left-hand slots come from the right, and vice versa.
+          const enterX = slot.pos.includes("-right-") ? -200 : 200;
+          return (
+            <div
+              key={`${i}-${k}`}
+              className={`absolute z-10 ${slot.pos}`}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible
+                  ? "translate(0, 0) scale(1)"
+                  : `translate(${enterX}px, 0) scale(0.4)`,
+                transition:
+                  "opacity 450ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDelay: visible ? `${k * 90}ms` : "0ms",
+              }}
+            >
+              <div style={{ animation: slot.float }}>
+                <div
+                  className={`w-[196px] rounded-[24px] py-4 pl-4 pr-5 shadow-xl ${slot.tilt}`}
+                  style={{ backgroundColor: detail.color }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-linen text-charcoal">
+                      {detail.icon}
+                    </span>
+                    <span
+                      lang="de"
+                      className="min-w-0 font-serif text-[18px] leading-tight text-charcoal hyphens-auto"
+                    >
+                      {detail.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        });
+      })}
+    </div>
+  );
+});
 
 interface AppShowcaseProps {
   sections?: ShowcaseSection[];
@@ -219,17 +503,25 @@ export default function AppShowcase({
   //   [card] → frame 0 → frame 1 → … → frame N
   // The first section's card is the free-standing one behind the phone, so
   // it isn't repeated here; every later section is introduced by its card.
-  const layers: ReactNode[] = [];
-  sections.forEach((section, i) => {
-    if (i > 0) {
-      layers.push(<UseCaseCard section={section} className="h-full w-full" />);
-    }
-    section.frames.forEach((frame) => layers.push(frame));
-  });
-
-  const segments = layers.length; // slide-up + (layers - 1) crossfades
+  // Scroll length: 1 segment for the phone slide-up, then for each later
+  // section a short hold on the current video followed by that section's
+  // card rise+fade, and a final hold on the last video. See cardStart() for
+  // the per-card offsets this must stay in sync with.
+  const lastCard = sections.length - 1;
+  const segments =
+    lastCard >= 1 ? 1 + (lastCard + 1) * HOLD_LEN + lastCard * CARD_LEN : 1;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  // Whether the sticky container is actually pinned to the viewport. Progress
+  // clamps to `segments`, so it can't tell "finished sliding up" from "scrolled
+  // past the section" — this can. Videos and satellites gate on it so they stop
+  // once the element has unstuck at either end.
+  const [pinned, setPinned] = useState(false);
+  // One-way latches: once the intro/outro reveal has been reached, keep it
+  // MOUNTED even as the user scrubs back across the boundary. Without this the
+  // heavy orbit trees mount/unmount on every crossing, which is what stutters.
+  const [introSeen, setIntroSeen] = useState(false);
+  const [outroSeen, setOutroSeen] = useState(false);
   const reducedMotion = useReducedMotion();
 
   const updateProgress = useCallback(() => {
@@ -238,25 +530,46 @@ export default function AppShowcase({
     const rect = el.getBoundingClientRect();
     const segmentPx = (window.innerHeight * SEGMENT_VH) / 100;
     setProgress(Math.min(segments, Math.max(0, -rect.top / segmentPx)));
+    setPinned(rect.top <= 0 && rect.bottom >= window.innerHeight);
   }, [segments]);
 
   useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    // Drive updates from a continuous rAF loop *while the section is in view*,
+    // not from `scroll` events. On mobile, scroll is off-main-thread and its
+    // events arrive late/coalesced, so a scroll-driven transform trails the
+    // compositor-positioned sticky element and visibly shakes. Reading layout
+    // every animation frame keeps our transform in lock-step with the scroll.
+    // An IntersectionObserver gates the loop so it isn't running off-screen.
     let raf = 0;
-    const onScroll = () => {
-      if (!raf) {
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          updateProgress();
-        });
+    let running = false;
+    const tick = () => {
+      updateProgress();
+      raf = requestAnimationFrame(tick);
+    };
+    const start = () => {
+      if (!running) {
+        running = true;
+        tick();
       }
     };
-    updateProgress();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+    const stop = () => {
+      running = false;
       if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? start() : stop()),
+      { rootMargin: "100px" },
+    );
+    io.observe(el);
+    updateProgress();
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      io.disconnect();
+      stop();
+      window.removeEventListener("resize", updateProgress);
     };
   }, [updateProgress]);
 
@@ -270,7 +583,7 @@ export default function AppShowcase({
           {sections.map((section, i) => (
             <div key={i} className="flex w-full flex-col items-center gap-10">
               <div className={FOOTPRINT}>
-                <UseCaseCard section={section} className={CARD_IN_FOOTPRINT} />
+                <PhoneScreenCard section={section} />
               </div>
               {section.frames.map((frame, f) => (
                 <div key={f} className={FOOTPRINT}>
@@ -284,18 +597,52 @@ export default function AppShowcase({
     );
   }
 
-  // Phone slides up during segment 0
-  const phoneShiftVh = (1 - clamp01(progress)) * 95;
+  // Phone slides up during segment 0. Expressed as a % of the phone's OWN
+  // height (like the rising cards), not vh: a vh-based translate jumps on
+  // mobile when the URL bar shows/hides and rewrites the viewport mid-scroll.
+  // 135% of the 70vh footprint ≈ the old 95vh, i.e. fully below the frame.
+  const phoneShiftPct = (1 - clamp01(progress)) * 135;
 
-  // The phone is "stuck" once it has finished sliding up (segment 0 done).
-  // Videos only play while stuck, so the first one holds on its opening frame
-  // during the slide-up instead of playing behind the moving frame.
-  const stuck = progress >= 1;
-  // Highest layer that has fully faded in and therefore hides everything
-  // beneath it — the video on a covered layer is paused to save work.
-  let coverIndex = 0;
-  for (let k = 1; k < layers.length; k++) {
-    if (progress >= k + FADE_END) coverIndex = k;
+  // Which section's screen is shown inside the phone right now. Each later
+  // section's video swaps in while its intro card is covering the screen, so
+  // the swap itself is never visible — the card fades to reveal the new video.
+  let currentSection = 0;
+  for (let c = 1; c < sections.length; c++) {
+    if (progress >= cardStart(c) + CARD_SWAP) currentSection = c;
+  }
+  const last = sections.length - 1;
+
+  // The outro's linen cover fades in over the last video as the choreography
+  // approaches its end (still pinned). It stays on once reached — progress
+  // clamps at `segments` — so it also holds as the section scrolls away.
+  const outroArmed = currentSection === last && progress >= segments - OUTRO_LEAD;
+  // The reveal ANIMATION, though, only starts once the cover is fully opaque
+  // and the pinned tail has begun (progress has hit the clamp). That way the
+  // gather/pop-in plays on a settled full-screen cover, in the dwell — not
+  // behind the fade at a scroll point you'd blow straight past.
+  const outroPlaying = currentSection === last && progress >= segments;
+
+  // Arm the mount latches the first time each reveal is genuinely reached.
+  // Guarded so these fire at most once (no render loop).
+  if (pinned && currentSection === 0 && !introSeen) setIntroSeen(true);
+  if (outroPlaying && !outroSeen) setOutroSeen(true);
+
+  // Scroll position (in segments) at which section i's cover has fully landed
+  // and the user has scrolled the small REVEAL_HOLD further — the point that
+  // arms the cover's self-running fade and starts its video. Section 0's cover
+  // (the orbit intro) lands when the phone locks at progress 1; every later
+  // section's card lands at CARD_RISE_END within its own segment.
+  const revealThreshold = (i: number) =>
+    i === 0
+      ? 1 + REVEAL_HOLD
+      : cardStart(i) + CARD_RISE_END + REVEAL_HOLD;
+  const isRevealed = (i: number) => progress >= revealThreshold(i);
+
+  // Highest section whose reveal has armed. Thresholds increase with index, so
+  // this single number encodes every isRevealed(i) for the memoised screens.
+  let revealedThrough = -1;
+  for (let i = 0; i < sections.length; i++) {
+    if (isRevealed(i)) revealedThrough = i;
   }
 
   return (
@@ -307,45 +654,131 @@ export default function AppShowcase({
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden px-6">
         {/* Shared footprint for card and phone so they stay aligned */}
         <div className={FOOTPRINT}>
-          {/* Free-standing card — 75% of the phone height, covered by the phone */}
-          <UseCaseCard section={sections[0]} className={CARD_IN_FOOTPRINT} />
+          {/* First section's intro card — sits behind the phone and gets
+              covered as the phone slides up. Sized to the phone screen. */}
+          <PhoneScreenCard section={sections[0]} style={{ zIndex: 0 }} />
 
           {/* Phone frame sliding in from the bottom */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 z-20"
             style={{
-              transform: `translate3d(0, ${phoneShiftVh}vh, 0)`,
+              transform: `translate3d(0, ${phoneShiftPct}%, 0)`,
               willChange: "transform",
             }}
           >
             <PhoneFrame>
-              {layers.map((layer, k) => {
-                // Layer k fades in during segment k (layer 0 is the base)
-                const local = clamp01(progress - k);
-                const opacity =
-                  k === 0
-                    ? 1
-                    : smoothstep(
-                        (local - FADE_START) / (FADE_END - FADE_START),
-                      );
-                if (k > 0 && opacity === 0) return null;
-                // Play this layer's video only once the phone is stuck, the
-                // layer is showing, and it isn't hidden under a higher one.
-                const play = stuck && opacity > 0 && coverIndex <= k;
-                return (
-                  <div
-                    key={k}
-                    className="absolute inset-0 bg-linen"
-                    style={{ opacity, zIndex: k }}
-                  >
-                    <LayerPlaybackContext.Provider value={play}>
-                      {layer}
-                    </LayerPlaybackContext.Provider>
+              <PhoneScreens
+                sections={sections}
+                currentSection={currentSection}
+                revealedThrough={revealedThrough}
+                pinned={pinned}
+              />
+
+              {/* Orbit intro covers the first screen's opening frame while the
+                  phone rises into place, then crossfades away to reveal the
+                  first video once the phone is stuck (and it starts playing).
+                  Latched on first arrival (introSeen) rather than gated on
+                  `pinned`, so scrubbing across the pin boundary doesn't
+                  mount/unmount the heavy orbit tree every crossing.
+                  translateZ(0)+contain isolate it onto its own compositor layer
+                  so its per-frame line animation repaints only itself, not the
+                  whole sliding-phone layer. */}
+              {introSeen && currentSection === 0 && (
+                <div
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
+                  style={{
+                    background: "var(--linen)",
+                    opacity: isRevealed(0) ? 0 : 1,
+                    transition: `opacity ${REVEAL_FADE_MS}ms ease`,
+                    transform: "translateZ(0)",
+                    willChange: "transform",
+                    contain: "paint",
+                  }}
+                >
+                  {/* Fixed coordinate box scaled down so the constellation sits
+                      inside the screen instead of spilling over the bezel. The
+                      linen cover lives on the parent, so only the orbit shrinks.
+                      Width is padded past the 360px stage and the root's own
+                      overflow:hidden is lifted so the widest tiles aren't clipped
+                      at the sides. */}
+                  <div style={COVER_SCALE_STYLE}>
+                    <OrbitIntroMemo
+                      logoSrc="/logos/bw-logo.svg"
+                      background="transparent"
+                      style={COVER_INNER_STYLE}
+                    />
                   </div>
-                );
-              })}
+                </div>
+              )}
+
+              {/* Outro reveal — mirrors the intro at the other end. Arms as the
+                  choreography reaches its end while the phone is still pinned,
+                  crossfading in over the last video and then holding through the
+                  pinned tail so its gather/pop-in is actually watched rather
+                  than scrolled away. The inner reveal is latched (outroSeen) so
+                  it plays on arm and survives scrubbing across the boundary. */}
+              {progress >= 1 && currentSection === last && (
+                <div
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
+                  style={{
+                    background: "var(--linen)",
+                    opacity: outroArmed ? 1 : 0,
+                    transition: "opacity 700ms ease",
+                    transform: "translateZ(0)",
+                    willChange: "transform",
+                    contain: "paint",
+                  }}
+                >
+                  {outroSeen && (
+                    <div style={COVER_SCALE_STYLE}>
+                      <OutroRevealMemo
+                        logoSrc="/logos/bw-logo.svg"
+                        background="transparent"
+                        style={OUTRO_INNER_STYLE}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </PhoneFrame>
           </div>
+
+          {/* Later sections' intro cards — each rises up from below the phone,
+              covers the screen, then fades away to reveal its app video. */}
+          {sections.map((section, i) => {
+            if (i === 0) return null;
+            const local = progress - cardStart(i);
+            // Only live during this card's own rise-and-fade segment.
+            if (local < 0 || local >= CARD_LEN) return null;
+            // Rise stays scroll-driven — the card tracks the scroll up into its
+            // covering spot. The fade does NOT: once the reveal threshold is
+            // crossed, opacity flips to 0 and the CSS transition runs it out on
+            // its own clock (REVEAL_FADE_MS), so scroll speed can't scrub it.
+            const riseP = clamp01(local / CARD_RISE_END);
+            const translateY = (1 - smoothstep(riseP)) * CARD_START_Y; // % of own height
+            return (
+              <PhoneScreenCard
+                key={i}
+                section={section}
+                style={{
+                  zIndex: 40,
+                  opacity: isRevealed(i) ? 0 : 1,
+                  transform: `translate3d(0, ${translateY}%, 0)`,
+                  transition: `opacity ${REVEAL_FADE_MS}ms ease`,
+                  willChange: "transform, opacity",
+                }}
+              />
+            );
+          })}
+
+          {/* Detail cards flanking the phone — large screens only. They fade
+              in with their section and carry the specifics the short headline
+              card can't. */}
+          <Satellites
+            sections={sections}
+            activeSection={currentSection}
+            shown={progress >= 1}
+          />
         </div>
       </div>
     </section>
@@ -374,8 +807,9 @@ function PhoneFrame({ children }: { children: ReactNode }) {
         className="pointer-events-none absolute inset-0 rounded-[44px] border-[10px] border-solid"
         style={{ borderColor: "var(--charcoal)" }}
       />
-      {/* Dynamic-island style notch */}
-      <div className="absolute left-1/2 top-5 z-50 h-5 w-20 -translate-x-1/2 rounded-full bg-charcoal" />
+      {/* Dynamic-island style notch — sized/positioned to line up with the
+          island baked into the app videos (higher, a touch wider, taller). */}
+      <div className="absolute left-1/2 top-[13px] z-50 h-[26px] w-[93px] -translate-x-1/2 rounded-full bg-charcoal" />
     </div>
   );
 }
@@ -454,12 +888,14 @@ function VideoScreen({
     const video = videoRef.current;
     if (!video) return;
     if (shouldPlay) {
+      // Every reveal starts the clip from the top, so the card always fades
+      // out onto the video's opening frame rather than mid-playback.
+      video.currentTime = 0;
       void video.play().catch(() => {});
     } else {
-      // Park on the first frame until the phone is stuck and this is the
-      // visible layer.
+      // Hold on the current frame (don't rewind, don't hide) when the phone
+      // isn't stuck — e.g. after scrolling past the pinned section.
       video.pause();
-      video.currentTime = 0;
     }
   }, [shouldPlay]);
 
@@ -821,28 +1257,78 @@ const defaultSections: ShowcaseSection[] = [
       alt: copy.screenAlt.feed,
       mock: <SpaceFeedScreen key="mock" />,
     }),
+    details: [
+      {
+        icon: <ChatCircleDotsIcon size={22} />,
+        label: "Feeds & Groups",
+        color: "var(--tangerine-dream)",
+      },
+      {
+        icon: <UsersThreeIcon size={22} />,
+        label: "Friends & Creators",
+        color: "var(--cotton-candy)",
+      },
+      {
+        icon: <NewspaperIcon size={22} />,
+        label: "News & Events",
+        color: "var(--monte-carlo)",
+      },
+    ],
   },
   {
     icon: <CompassIcon size={40} />,
     text: copy.cards.unbubble,
     cardColor: "var(--cotton-candy)",
     frames: buildFrames({
-      images: ["/images/app/unbubble1.png", "/images/app/unbubble2.png"],
-      video: "/videos/app/unbubble.mp4",
+      images: [],
+      video: "/videos/app/discover.webm",
       alt: copy.screenAlt.unbubble,
       mock: <UnbubbleScreen key="mock" />,
     }),
+    details: [
+      {
+        icon: <ArrowsClockwiseIcon size={22} />,
+        label: "Perspective shift",
+        color: "var(--apricot-dream)",
+      },
+      {
+        icon: <CalendarBlankIcon size={22} />,
+        label: "Events near you",
+        color: "var(--monte-carlo)",
+      },
+      {
+        icon: <HandshakeIcon size={22} />,
+        label: "Connect with people",
+        color: "var(--tangerine-dream)",
+      },
+    ],
   },
   {
     icon: <MagnifyingGlassIcon size={40} />,
     text: copy.cards.search,
     cardColor: "var(--monte-carlo)",
     frames: buildFrames({
-      images: ["/images/app/search1.png", "/images/app/search2.png"],
-      video: "/videos/app/search.mp4",
+      images: [],
+      video: "/videos/app/search.webm",
       alt: copy.screenAlt.search,
-      notchGap: true,
       mock: <SearchScreen key="mock" />,
     }),
+    details: [
+      {
+        icon: <HouseIcon size={22} />,
+        label: "Homes & Flats",
+        color: "var(--cotton-candy)",
+      },
+      {
+        icon: <NewspaperIcon size={22} />,
+        label: "Local news",
+        color: "var(--tangerine-dream)",
+      },
+      {
+        icon: <UsersThreeIcon size={22} />,
+        label: "People & Services",
+        color: "var(--apricot-dream)",
+      },
+    ],
   },
 ];
