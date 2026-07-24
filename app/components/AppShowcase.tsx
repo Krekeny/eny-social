@@ -73,11 +73,17 @@ const SEGMENT_VH = 100;
 // Pinned dwell after the choreography completes. This is where the outro
 // reveal plays: it arms as progress reaches the end (still pinned) and holds
 // for this whole tail, so you watch the animation instead of scrolling it away.
-const TAIL_VH = 42;
+const TAIL_VH = 25;
 // How far before the end (in segments) the outro linen cover begins fading in.
 // Bigger than the fade duration so the cover is fully opaque by the time the
 // pinned tail begins — that's when the reveal animation is allowed to start.
-const OUTRO_LEAD = 0.4;
+const OUTRO_LEAD = 0.35;
+// Extra scroll the LAST video lingers before the outro begins. Every other
+// video gets a natural gap from the next card rising over it; the last one has
+// no card, so without this it flips to the outro almost immediately. This is
+// that missing gap, as its own knob — raise it to dwell longer on the last
+// video, independent of the outro's own (TAIL_VH) dwell.
+const LAST_HOLD = 0.55;
 
 // Intro-card choreography, expressed as fractions of a card's own scroll
 // segment. Each later section is introduced by a card that rises up from
@@ -509,67 +515,87 @@ export default function AppShowcase({
   // the per-card offsets this must stay in sync with.
   const lastCard = sections.length - 1;
   const segments =
-    lastCard >= 1 ? 1 + (lastCard + 1) * HOLD_LEN + lastCard * CARD_LEN : 1;
+    lastCard >= 1
+      ? 1 + (lastCard + 1) * HOLD_LEN + lastCard * CARD_LEN + LAST_HOLD
+      : 1;
   const wrapperRef = useRef<HTMLDivElement>(null);
+  // The pinned container is sized in `svh` (small viewport height) — a value
+  // that does NOT change as the mobile URL bar shows/hides. We read its live
+  // pixel height here and use it as the segment length, so the scroll→progress
+  // math is anchored to the same stable unit as the layout. Using window
+  // .innerHeight instead makes progress jump every time the bar toggles.
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const vhRef = useRef(0);
   const [progress, setProgress] = useState(0);
+  // 0→1 across the ENTIRE pinned scroll (holds and tail included), unlike
+  // `progress` which clamps at `segments`. Drives the scroll indicator so it
+  // keeps moving during the static holds — otherwise those read as "stuck".
+  const [overall, setOverall] = useState(0);
   // Whether the sticky container is actually pinned to the viewport. Progress
   // clamps to `segments`, so it can't tell "finished sliding up" from "scrolled
   // past the section" — this can. Videos and satellites gate on it so they stop
   // once the element has unstuck at either end.
   const [pinned, setPinned] = useState(false);
-  // One-way latches: once the intro/outro reveal has been reached, keep it
-  // MOUNTED even as the user scrubs back across the boundary. Without this the
-  // heavy orbit trees mount/unmount on every crossing, which is what stutters.
+  // One-way latch: once the INTRO has been reached, keep it mounted even as the
+  // user scrubs back across the pin boundary. Without this the heavy orbit tree
+  // mounts/unmounts on every crossing, which stutters. (The outro deliberately
+  // does NOT latch — it remounts on each entry so its animation replays.)
   const [introSeen, setIntroSeen] = useState(false);
-  const [outroSeen, setOutroSeen] = useState(false);
   const reducedMotion = useReducedMotion();
 
   const updateProgress = useCallback(() => {
     const el = wrapperRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const segmentPx = (window.innerHeight * SEGMENT_VH) / 100;
-    setProgress(Math.min(segments, Math.max(0, -rect.top / segmentPx)));
-    setPinned(rect.top <= 0 && rect.bottom >= window.innerHeight);
+    // Stable svh-based length (see stickyRef); fall back to innerHeight only
+    // before the first measure.
+    const vh = vhRef.current || window.innerHeight;
+    setProgress(Math.min(segments, Math.max(0, -rect.top / vh)));
+    setPinned(rect.top <= 0 && rect.bottom >= vh);
+    // Fraction scrolled through the whole pinned region (its px height minus one
+    // viewport). Keeps advancing even where `progress` is clamped or holding.
+    const scrollablePx = (segments + TAIL_VH / SEGMENT_VH) * vh;
+    setOverall(
+      scrollablePx > 0 ? Math.min(1, Math.max(0, -rect.top / scrollablePx)) : 0,
+    );
   }, [segments]);
 
   useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    // Drive updates from a continuous rAF loop *while the section is in view*,
-    // not from `scroll` events. On mobile, scroll is off-main-thread and its
-    // events arrive late/coalesced, so a scroll-driven transform trails the
-    // compositor-positioned sticky element and visibly shakes. Reading layout
-    // every animation frame keeps our transform in lock-step with the scroll.
-    // An IntersectionObserver gates the loop so it isn't running off-screen.
+    // Measure the pinned container's px height (= 100svh). Stable across URL-bar
+    // toggles; only changes on a real layout change (orientation, window resize).
+    const measureVh = () => stickyRef.current?.clientHeight ?? window.innerHeight;
+    vhRef.current = measureVh();
+    updateProgress();
+
+    // Update once per frame, driven by scroll events. A *continuous* rAF loop
+    // seems smoother but regresses mobile: rAF is throttled during momentum
+    // scrolling, so it freezes mid-fling and snaps to the final position when
+    // momentum ends. Scroll events keep firing through momentum.
     let raf = 0;
-    let running = false;
-    const tick = () => {
-      updateProgress();
-      raf = requestAnimationFrame(tick);
-    };
-    const start = () => {
-      if (!running) {
-        running = true;
-        tick();
+    const onScroll = () => {
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          updateProgress();
+        });
       }
     };
-    const stop = () => {
-      running = false;
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+    // A mobile URL-bar show/hide fires `resize` but does NOT change svh, so only
+    // recompute when the measured height actually changed. This is what stops
+    // the position from jumping when the bar settles at the end of a scroll.
+    const onResize = () => {
+      const next = measureVh();
+      if (next !== vhRef.current) {
+        vhRef.current = next;
+        updateProgress();
+      }
     };
-    const io = new IntersectionObserver(
-      ([entry]) => (entry.isIntersecting ? start() : stop()),
-      { rootMargin: "100px" },
-    );
-    io.observe(el);
-    updateProgress();
-    window.addEventListener("resize", updateProgress);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
-      io.disconnect();
-      stop();
-      window.removeEventListener("resize", updateProgress);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, [updateProgress]);
 
@@ -616,16 +642,10 @@ export default function AppShowcase({
   // approaches its end (still pinned). It stays on once reached — progress
   // clamps at `segments` — so it also holds as the section scrolls away.
   const outroArmed = currentSection === last && progress >= segments - OUTRO_LEAD;
-  // The reveal ANIMATION, though, only starts once the cover is fully opaque
-  // and the pinned tail has begun (progress has hit the clamp). That way the
-  // gather/pop-in plays on a settled full-screen cover, in the dwell — not
-  // behind the fade at a scroll point you'd blow straight past.
-  const outroPlaying = currentSection === last && progress >= segments;
 
-  // Arm the mount latches the first time each reveal is genuinely reached.
-  // Guarded so these fire at most once (no render loop).
+  // Arm the intro latch the first time it's genuinely reached (guarded so it
+  // fires at most once — no render loop).
   if (pinned && currentSection === 0 && !introSeen) setIntroSeen(true);
-  if (outroPlaying && !outroSeen) setOutroSeen(true);
 
   // Scroll position (in segments) at which section i's cover has fully landed
   // and the user has scrolled the small REVEAL_HOLD further — the point that
@@ -649,9 +669,12 @@ export default function AppShowcase({
     <section
       ref={wrapperRef}
       className="relative"
-      style={{ height: `calc(${segments * SEGMENT_VH + TAIL_VH}vh + 100vh)` }}
+      style={{ height: `calc(${segments * SEGMENT_VH + TAIL_VH}svh + 100svh)` }}
     >
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden px-6">
+      <div
+        ref={stickyRef}
+        className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden px-6"
+      >
         {/* Shared footprint for card and phone so they stay aligned */}
         <div className={FOOTPRINT}>
           {/* First section's intro card — sits behind the phone and gets
@@ -714,9 +737,9 @@ export default function AppShowcase({
               {/* Outro reveal — mirrors the intro at the other end. Arms as the
                   choreography reaches its end while the phone is still pinned,
                   crossfading in over the last video and then holding through the
-                  pinned tail so its gather/pop-in is actually watched rather
-                  than scrolled away. The inner reveal is latched (outroSeen) so
-                  it plays on arm and survives scrubbing across the boundary. */}
+                  pinned tail. The inner reveal mounts on `outroArmed` (not a
+                  latch) so it REMOUNTS on every entry and its gather/pop-in
+                  replays each time you reach the outro. */}
               {progress >= 1 && currentSection === last && (
                 <div
                   className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
@@ -729,7 +752,7 @@ export default function AppShowcase({
                     contain: "paint",
                   }}
                 >
-                  {outroSeen && (
+                  {outroArmed && (
                     <div style={COVER_SCALE_STYLE}>
                       <OutroRevealMemo
                         logoSrc="/logos/bw-logo.svg"
@@ -779,6 +802,29 @@ export default function AppShowcase({
             activeSection={currentSection}
             shown={progress >= 1}
           />
+
+          {/* Overall scroll indicator. Mapped to the full pinned scroll so it
+              keeps advancing through the static holds — reassuring the user
+              that scrolling is doing something even when the scene isn't
+              changing. Anchored just ABOVE the phone (relative to the footprint)
+              so it tracks the phone and sits in the clear linen gap — below the
+              page header, above and clear of the rising cards. Fades in only
+              while pinned. */}
+          <div
+            className="pointer-events-none absolute bottom-[calc(100%+1rem)] left-1/2 z-50 h-1.5 w-44 -translate-x-1/2 overflow-hidden rounded-full bg-charcoal/10"
+            style={{
+              opacity: pinned ? 1 : 0,
+              transition: "opacity 300ms ease",
+            }}
+          >
+            <div
+              className="h-full w-full origin-left bg-tangerine"
+              style={{
+                transform: `scaleX(${overall})`,
+                willChange: "transform",
+              }}
+            />
+          </div>
         </div>
       </div>
     </section>
