@@ -563,7 +563,8 @@ export default function AppShowcase({
   useEffect(() => {
     // Measure the pinned container's px height (= 100svh). Stable across URL-bar
     // toggles; only changes on a real layout change (orientation, window resize).
-    const measureVh = () => stickyRef.current?.clientHeight ?? window.innerHeight;
+    const measureVh = () =>
+      stickyRef.current?.clientHeight ?? window.innerHeight;
     vhRef.current = measureVh();
     updateProgress();
 
@@ -641,7 +642,8 @@ export default function AppShowcase({
   // The outro's linen cover fades in over the last video as the choreography
   // approaches its end (still pinned). It stays on once reached — progress
   // clamps at `segments` — so it also holds as the section scrolls away.
-  const outroArmed = currentSection === last && progress >= segments - OUTRO_LEAD;
+  const outroArmed =
+    currentSection === last && progress >= segments - OUTRO_LEAD;
 
   // Arm the intro latch the first time it's genuinely reached (guarded so it
   // fires at most once — no render loop).
@@ -653,9 +655,7 @@ export default function AppShowcase({
   // (the orbit intro) lands when the phone locks at progress 1; every later
   // section's card lands at CARD_RISE_END within its own segment.
   const revealThreshold = (i: number) =>
-    i === 0
-      ? 1 + REVEAL_HOLD
-      : cardStart(i) + CARD_RISE_END + REVEAL_HOLD;
+    i === 0 ? 1 + REVEAL_HOLD : cardStart(i) + CARD_RISE_END + REVEAL_HOLD;
   const isRevealed = (i: number) => progress >= revealThreshold(i);
 
   // Highest section whose reveal has armed. Thresholds increase with index, so
@@ -1292,6 +1292,8 @@ function buildFrames({
   return screenshotFrames(images, alt, notchGap);
 }
 
+const currentLocale = "en";
+
 const defaultSections: ShowcaseSection[] = [
   {
     icon: <HouseIcon size={40} />,
@@ -1299,7 +1301,7 @@ const defaultSections: ShowcaseSection[] = [
     cardColor: "var(--apricot-dream)",
     frames: buildFrames({
       images: [],
-      video: "/videos/app/space-feed.webm",
+      video: `/videos/app/${currentLocale}/space-feed.webm`,
       alt: copy.screenAlt.feed,
       mock: <SpaceFeedScreen key="mock" />,
     }),
@@ -1327,7 +1329,7 @@ const defaultSections: ShowcaseSection[] = [
     cardColor: "var(--cotton-candy)",
     frames: buildFrames({
       images: [],
-      video: "/videos/app/discover.webm",
+      video: `/videos/app/${currentLocale}/discover.webm`,
       alt: copy.screenAlt.unbubble,
       mock: <UnbubbleScreen key="mock" />,
     }),
@@ -1355,7 +1357,7 @@ const defaultSections: ShowcaseSection[] = [
     cardColor: "var(--monte-carlo)",
     frames: buildFrames({
       images: [],
-      video: "/videos/app/search.webm",
+      video: `/videos/app/${currentLocale}/search.webm`,
       alt: copy.screenAlt.search,
       mock: <SearchScreen key="mock" />,
     }),
