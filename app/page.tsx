@@ -1,5 +1,6 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import AppShowcase from "./components/AppShowcase";
 import RememberWhen from "./components/RememberWhen";
 import WeBelieve from "./components/WeBelieve";
 import ValueCards from "./components/ValueCards";
@@ -12,12 +13,13 @@ import GrainFilter from "./components/ui/GrainFilter";
 
 export default function Home() {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-clip">
       <GrainFilter />
       <Nav />
       <main className="relative z-10">
         <Hero />
         <RememberWhen />
+        <AppShowcase />
         <WeBelieve />
         <ValueCards />
         <StartingInOffenbach />
