@@ -47,6 +47,8 @@ import {
   ArrowsClockwiseIcon,
   CalendarBlankIcon,
   NewspaperIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
 } from "@phosphor-icons/react";
 
 /**
@@ -541,6 +543,20 @@ export default function AppShowcase({
   // mounts/unmounts on every crossing, which stutters. (The outro deliberately
   // does NOT latch — it remounts on each entry so its animation replays.)
   const [introSeen, setIntroSeen] = useState(false);
+  // True while a Prev/Next/Skip jump is animating. A button jump smooth-scrolls
+  // fast through the in-between satellite states, which would flash. While it's
+  // in flight the satellites are pinned to the DESTINATION's state (its section
+  // and whether it shows any) instead of following the swept-through progress:
+  // a section-changing jump then shows only the target's set (no in-between
+  // flash), and a same-section jump has an identical destination state, so
+  // already-shown satellites stay put instead of blinking off and on. Cleared
+  // when the scroll settles (see the scroll-idle timer below).
+  const [navigating, setNavigating] = useState(false);
+  const [navSection, setNavSection] = useState(0);
+  const [navShown, setNavShown] = useState(false);
+  const navFallbackRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const reducedMotion = useReducedMotion();
 
   const updateProgress = useCallback(() => {
@@ -573,6 +589,10 @@ export default function AppShowcase({
     // scrolling, so it freezes mid-fling and snaps to the final position when
     // momentum ends. Scroll events keep firing through momentum.
     let raf = 0;
+    // A button jump animates via smooth scroll, which keeps firing scroll
+    // events; once they stop for a beat the jump has landed, so clear the
+    // `navigating` suppression and let the landed section's satellites appear.
+    let idle: ReturnType<typeof setTimeout> | undefined;
     const onScroll = () => {
       if (!raf) {
         raf = requestAnimationFrame(() => {
@@ -580,6 +600,8 @@ export default function AppShowcase({
           updateProgress();
         });
       }
+      if (idle) clearTimeout(idle);
+      idle = setTimeout(() => setNavigating(false), 180);
     };
     // A mobile URL-bar show/hide fires `resize` but does NOT change svh, so only
     // recompute when the measured height actually changed. This is what stops
@@ -597,6 +619,8 @@ export default function AppShowcase({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
+      if (idle) clearTimeout(idle);
+      if (navFallbackRef.current) clearTimeout(navFallbackRef.current);
     };
   }, [updateProgress]);
 
@@ -630,13 +654,18 @@ export default function AppShowcase({
   // 135% of the 70vh footprint ≈ the old 95vh, i.e. fully below the frame.
   const phoneShiftPct = (1 - clamp01(progress)) * 135;
 
-  // Which section's screen is shown inside the phone right now. Each later
-  // section's video swaps in while its intro card is covering the screen, so
-  // the swap itself is never visible — the card fades to reveal the new video.
-  let currentSection = 0;
-  for (let c = 1; c < sections.length; c++) {
-    if (progress >= cardStart(c) + CARD_SWAP) currentSection = c;
-  }
+  // Which section's screen is shown inside the phone at a given progress. Each
+  // later section's video swaps in while its intro card is covering the screen,
+  // so the swap itself is never visible — the card fades to reveal the new
+  // video. Reused to resolve a jump's DESTINATION section, not just the current.
+  const sectionAtProgress = (p: number) => {
+    let s = 0;
+    for (let c = 1; c < sections.length; c++) {
+      if (p >= cardStart(c) + CARD_SWAP) s = c;
+    }
+    return s;
+  };
+  const currentSection = sectionAtProgress(progress);
   const last = sections.length - 1;
 
   // The outro's linen cover fades in over the last video as the choreography
@@ -664,6 +693,82 @@ export default function AppShowcase({
   for (let i = 0; i < sections.length; i++) {
     if (isRevealed(i)) revealedThrough = i;
   }
+
+  // ---- Prev / Next / Skip controls -----------------------------------------
+  // The whole scene is a pure function of scroll position, so "jump to a stop"
+  // just means scrolling the page to the scrollY that maps to that stop's
+  // progress. `progress = -rect.top / vh`, so the document-space scrollY for a
+  // given progress P is `wrapperTop + P * vh`.
+  //
+  // Each stop is a CARD-COVER position — the moment that stop's cover is fully
+  // landed over the phone: the orbit intro for section 0, each rising card for
+  // the later sections, the outro at the very end. Landing on the cover (just
+  // before its reveal fade arms) makes every stop the same clean, labelled
+  // state, so stepping feels uniform instead of dropping you at arbitrary
+  // points mid-video.
+  // Card-cover stop positions (progress units), in scroll order. Section 0's
+  // stop is the free-standing feed card BEHIND the phone — visible only at the
+  // very start before the phone rises over it (progress ~0, "only the first
+  // card"). The later stops are each card fully risen over the phone: past
+  // CARD_SWAP so its video is underneath, but before the reveal fade arms so
+  // the card still shows.
+  const stopTarget = (i: number) =>
+    i <= 0 ? 0.06 : cardStart(i) + CARD_SWAP + 0.04;
+  const stops = sections.map((_, i) => stopTarget(i));
+
+  // Navigate to the nearest stop BEFORE / AFTER the current scroll position —
+  // NOT a fixed per-section index. This is what makes Prev work from the middle
+  // of a section: on the playing feed video (~1/3 through) the current section
+  // is still 0, but the nearest earlier stop is the opening feed card, so Prev
+  // returns there instead of being disabled. The tiny margin stops "already
+  // sitting on a stop" from re-triggering it. Next past the last card has no
+  // later stop, so it skips out beyond the outro.
+  const STOP_EPS = 0.02;
+  const prevTarget =
+    [...stops].reverse().find((s) => s < progress - STOP_EPS) ?? null;
+  const nextTarget = stops.find((s) => s > progress + STOP_EPS) ?? null;
+
+  // Mark a jump as in-flight and pin the satellites to the destination's state
+  // (section + whether it shows any) while it animates. The scroll-idle timer
+  // clears it on landing; this fallback guarantees it never sticks if a jump
+  // somehow produces no scroll events (e.g. already at target).
+  const beginNav = (targetSection: number, targetShown: boolean) => {
+    setNavigating(true);
+    setNavSection(targetSection);
+    setNavShown(targetShown);
+    if (navFallbackRef.current) clearTimeout(navFallbackRef.current);
+    navFallbackRef.current = setTimeout(() => setNavigating(false), 1200);
+  };
+  const scrollToProgress = (p: number) => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const vh = vhRef.current || window.innerHeight;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    // Destination satellite state: its section, shown once the phone is up (>=1).
+    beginNav(sectionAtProgress(p), p >= 1);
+    window.scrollTo({ top: top + p * vh, behavior: "smooth" });
+  };
+  // Scroll just past the pinned region so the next page section takes over.
+  const scrollPastEnd = () => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const vh = vhRef.current || window.innerHeight;
+    const rect = el.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    // Exiting on the last section — keep its satellites through the sweep out.
+    beginNav(last, true);
+    window.scrollTo({ top: top + rect.height - vh + 4, behavior: "smooth" });
+  };
+  const goPrev = () => {
+    if (prevTarget !== null) scrollToProgress(prevTarget);
+  };
+  // Next steps to the following card; on the last section there is none, so it
+  // behaves exactly like Skip — jumps out past the outro rather than resting on
+  // it just before the end.
+  const goNext = () => {
+    if (nextTarget !== null) scrollToProgress(nextTarget);
+    else scrollPastEnd();
+  };
 
   return (
     <section
@@ -799,8 +904,8 @@ export default function AppShowcase({
               card can't. */}
           <Satellites
             sections={sections}
-            activeSection={currentSection}
-            shown={progress >= 1}
+            activeSection={navigating ? navSection : currentSection}
+            shown={navigating ? navShown : progress >= 1}
           />
 
           {/* Overall scroll indicator. Mapped to the full pinned scroll so it
@@ -824,6 +929,46 @@ export default function AppShowcase({
                 willChange: "transform",
               }}
             />
+          </div>
+        </div>
+
+        {/* Prev / Next / Skip — an alternative to scrolling the showcase.
+            Anchored to the bottom-centre of the pinned viewport (in the clear
+            gap below the phone). Only interactive while pinned; fades out
+            otherwise so it never floats over the surrounding page. */}
+        <div
+          className="absolute bottom-6 left-1/2 z-50 -translate-x-1/2"
+          style={{
+            opacity: pinned ? 1 : 0,
+            pointerEvents: pinned ? "auto" : "none",
+            transition: "opacity 300ms ease",
+          }}
+        >
+          <div className="flex items-center gap-1 rounded-full bg-charcoal/90 p-1.5 text-linen shadow-xl backdrop-blur-sm">
+            <button
+              type="button"
+              onClick={goPrev}
+              disabled={prevTarget === null}
+              aria-label="Previous section"
+              className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-linen/15 disabled:pointer-events-none disabled:opacity-30"
+            >
+              <CaretLeftIcon size={18} weight="bold" />
+            </button>
+            <button
+              type="button"
+              onClick={goNext}
+              aria-label={nextTarget !== null ? "Next section" : "Skip showcase"}
+              className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-linen/15"
+            >
+              <CaretRightIcon size={18} weight="bold" />
+            </button>
+            <button
+              type="button"
+              onClick={scrollPastEnd}
+              className="ml-0.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors hover:bg-linen/15"
+            >
+              Skip
+            </button>
           </div>
         </div>
       </div>
